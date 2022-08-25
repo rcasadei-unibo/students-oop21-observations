@@ -3,3 +3,6 @@
 *.log
 *.pdf
 !myImportantFile.pdf
+/.metadata/
+/.project/
+/.settings/
