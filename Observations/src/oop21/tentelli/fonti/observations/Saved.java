@@ -1,5 +1,9 @@
 package oop21.tentelli.fonti.observations;
 
+/*
+ * Simple class for create folder from root, return a filepath string 
+ */
+
 import java.io.File;
 
 
@@ -7,13 +11,13 @@ public class Saved {
 
 	public static final String SEP = File.separator;
 	public static final String ROOT = System.getProperty("user.home");
-	private final String nameApp = "Observations";
+	public static final String SAVE_DIR = ROOT + SEP + "Observations" + SEP + "save";
 	
-	public boolean makeDir() {
+	public String makeDir(String name) {
 		
-		File name = new File(ROOT + SEP + nameApp + "save");
-		return name.mkdir();
-
+		File dir = new File(SAVE_DIR + name);
+		dir.mkdirs();
+		return dir.toString();
 	}
 	
 }
