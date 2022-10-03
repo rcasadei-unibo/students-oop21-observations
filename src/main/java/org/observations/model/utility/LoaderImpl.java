@@ -1,4 +1,4 @@
-package org.observations.Model.utility;
+package org.observations.model.utility;
 
 /**
  * Simple class for load file and folder from root, return a list file or single file in the selected directory 

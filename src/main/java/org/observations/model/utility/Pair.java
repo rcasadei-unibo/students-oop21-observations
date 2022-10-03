@@ -1,4 +1,4 @@
-package org.observations.Model.utility;
+package org.observations.model.utility;
 
 /*
  * A standard generic Pair<X,Y>, with getters, hashCode, equals, and toString well implemented. 

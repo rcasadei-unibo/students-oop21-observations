@@ -1,4 +1,4 @@
-package org.observations.Model.utility;
+package org.observations.model.utility;
 
 /**
  * Simple enum for first start moment list

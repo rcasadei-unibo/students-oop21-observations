@@ -1,4 +1,4 @@
-package org.observations.Model.utility;
+package org.observations.model.utility;
 
 /**
  * Only one use class, when start first time, create file and folder basic. when launch after first start do nothing

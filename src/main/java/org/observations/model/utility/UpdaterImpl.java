@@ -1,4 +1,4 @@
-package org.observations.Model.utility;
+package org.observations.model.utility;
 
 /**
  * Updater class for all string passed, create and manage all file in all class.

@@ -1,4 +1,4 @@
-package org.observations.Model;
+package org.observations.model;
 
 /**
  * Simple class for create folder from root, return a filepath string 

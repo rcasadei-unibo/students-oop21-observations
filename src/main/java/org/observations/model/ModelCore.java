@@ -1,4 +1,4 @@
-package org.observations.Model;
+package org.observations.model;
 
 /**
  * Model core app, create all class need and pass reference for create, write and load. Create a first load:

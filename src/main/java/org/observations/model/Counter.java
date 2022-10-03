@@ -1,4 +1,4 @@
-package org.observations.Model;
+package org.observations.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
