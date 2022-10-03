@@ -1,9 +1,0 @@
-/bin/
-/doc/
-*.log
-*.pdf
-!myImportantFile.pdf
-/.metadata/
-/.settings
-/.classpath
-/.project
