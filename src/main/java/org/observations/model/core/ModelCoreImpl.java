@@ -8,22 +8,13 @@ package org.observations.model.core;
  * user required.
  */
 
+import org.observations.model.*;
+import org.observations.model.utility.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.observations.Counter;
-import org.observations.Loader;
-import org.observations.ModelCore;
-import org.observations.Saved;
-import org.observations.Updater;
-import org.observations.utility.CounterImpl;
-import org.observations.utility.FirstLoaderImpl;
-import org.observations.utility.LoaderImpl;
-import org.observations.utility.Pair;
-import org.observations.utility.SavedImpl;
-import org.observations.utility.UpdaterImpl;
 
 public class ModelCoreImpl implements ModelCore {
 
@@ -59,7 +50,7 @@ public class ModelCoreImpl implements ModelCore {
 		this.save = new SavedImpl();
 		this.loader = new LoaderImpl();
 		this.counter = new CounterImpl();
-		new FirstLoaderImpl().firstLoad(DIR, STUDENT_DIR, MOMENTS_LIST, TYPE_OBSERVED_LIST, save);;
+		new FirstLoaderImpl().firstLoad(DIR, STUDENT_DIR, MOMENTS_LIST, TYPE_OBSERVED_LIST, save);
 		this.updater = new UpdaterImpl(DIR + MOMENTS_LIST, SEP, DIR + STUDENT_DIR + SEP, loader);
 	}
 	

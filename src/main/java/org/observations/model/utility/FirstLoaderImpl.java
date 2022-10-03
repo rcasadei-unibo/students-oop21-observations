@@ -8,8 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.observations.FirstLoader;
-import org.observations.Saved;
+import org.observations.model.FirstLoader;
+import org.observations.model.Saved;
 
 public class FirstLoaderImpl implements FirstLoader {
 	

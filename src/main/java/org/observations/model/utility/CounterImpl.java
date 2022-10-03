@@ -7,7 +7,7 @@ package org.observations.model.utility;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.observations.Counter;
+import org.observations.model.Counter;
 
 public class CounterImpl implements Counter {
 

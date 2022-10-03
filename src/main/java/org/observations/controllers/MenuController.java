@@ -10,11 +10,11 @@ public class MenuController {
 
     private final MainController controller;
     private final MenuBar menuBar = new MenuBar();
-    private Menu fileMenu;
-    private Menu viewMenu;
-    private MenuItem settings;
-    private MenuItem export;
-    private MenuItem charts;
+    private final Menu fileMenu;
+    private final Menu viewMenu;
+    private final MenuItem settings;
+    private final MenuItem export;
+    private final MenuItem charts;
 
     public MenuController(MainController mainController) {
         this.controller = mainController;

@@ -1,13 +1,14 @@
 package org.observations.model.core;
 
+import org.observations.model.ModelCore;
+import org.observations.model.utility.Pair;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.observations.ModelCore;
-import org.observations.utility.Pair;
 
 public class ModelAdapter {
 

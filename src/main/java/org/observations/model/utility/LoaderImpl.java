@@ -11,8 +11,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
-import org.observations.Loader;
+import org.observations.model.Loader;
 
 public class LoaderImpl implements Loader {
 
@@ -23,9 +24,7 @@ public class LoaderImpl implements Loader {
 	public ArrayList<String> loadFileFolder(final String dir) {
 		ArrayList<String> listFileFolder = new ArrayList<>();
 		if (new File(dir).exists()) {
-			for (final String e : new File(dir).list()) {
-				listFileFolder.add(e);
-			}
+			Collections.addAll(listFileFolder, new File(dir).list());
 			listFileFolder.sort((a,b)->a.compareTo(b));
 		}
 		return listFileFolder;

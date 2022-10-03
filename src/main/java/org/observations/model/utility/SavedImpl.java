@@ -8,8 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import org.observations.Saved;
+import org.observations.model.Saved;
 
 
 public class SavedImpl implements Saved {

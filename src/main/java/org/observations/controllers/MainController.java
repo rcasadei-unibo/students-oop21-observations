@@ -8,10 +8,10 @@ import java.util.Map;
 
 public class MainController {
     private final MainView view;
-    private MenuController menuController;
-    private SubController<String, List<String>, String> studentsViewController;
-    private SubController<String, List<String>, String> hoursViewController;
-    private SubController<String, Map<String, Map<String, Integer>>, Integer> observatonsViewController;
+    private final MenuController menuController;
+    private final SubController<String, List<String>, String> studentsViewController;
+    private final SubController<String, List<String>, String> hoursViewController;
+    private final SubController<String, Map<String, Map<String, Integer>>, Integer> observatonsViewController;
 
     public MainController() {
         menuController = new MenuController(this);

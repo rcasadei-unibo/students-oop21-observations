@@ -3,7 +3,7 @@ package org.observations.model;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.observations.utility.Pair;
+import org.observations.model.utility.Pair;
 
 public interface Counter {
 

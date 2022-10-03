@@ -9,9 +9,9 @@ package org.observations.model.utility;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.observations.Loader;
-import org.observations.Saved;
-import org.observations.Updater;
+import org.observations.model.Loader;
+import org.observations.model.Saved;
+import org.observations.model.Updater;
 
 public class UpdaterImpl implements Updater {
 
