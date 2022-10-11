@@ -4,18 +4,21 @@ import javafx.scene.Node;
 import org.observations.gui.ObservatonsView;
 import org.observations.gui.View;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ObservatonsViewController implements SubController<String, Map<String, Map<String, Integer>>, Integer> {
+public class ObservatonsViewController implements SubController<String, Map<String, Map<String, Integer>>, List<String>> {
 
     private final MainController parentController;
     private final View<Map<String, Map<String, Integer>>> view;
+    private List<String> observationTypes;
 
-    public ObservatonsViewController(MainController mainController) {
+
+    public ObservatonsViewController(MainController mainController, List<String> observationTypesList) {
         this.parentController = mainController;
+        this.observationTypes = observationTypesList;
         this.view = new ObservatonsView(this);
+
     }
 
     public void updateView(Map<String, Map<String, Integer>> input) {
@@ -36,20 +39,21 @@ public class ObservatonsViewController implements SubController<String, Map<Stri
     }
 
     public void getData(String text) {
-        System.out.println(text);
-        Map<String, Map<String, Integer>> data;
-        if(!text.isEmpty()){
-            //TODO
+    }
+
+    public void updateModel(List<String> input) {
+        this.parentController.insertNewObservation(input.get(0), input.get(1));
+    }
+
+    public void updateObservationsCount(String activity, Boolean isIncrement) {
+        if(isIncrement){
+            this.parentController.incrementObservationCount(activity);
+        } else {
+            this.parentController.decrementObservationCount(activity);
         }
-        this.updateView(data = Map.of());
     }
 
-    public void updateModel(Integer output) {
-        System.out.println(output);
-        //TODO
-    }
-
-    public void updateObservationsCount(String hour, String activity, Boolean isIncrement) {
-        //TODO
+    public List<String> getObservationsTypesNames() {
+        return this.observationTypes;
     }
 }

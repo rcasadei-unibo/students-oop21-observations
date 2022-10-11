@@ -4,51 +4,53 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.observations.controllers.HoursViewController;
+import org.observations.controllers.MomentsViewController;
+import org.observations.gui.popup.MomentsInsertionPopup;
 
-import java.util.*;
+import java.util.List;
 
-public class HoursView implements View<List<String>> {
+public class MomentsView implements View<List<String>> {
 
-    private final HoursViewController controller;
+    private final MomentsViewController controller;
     private final BorderPane view = new BorderPane();
-    private final VBox listBox = new VBox();
+    private final ScrollPane listPane = new ScrollPane();
     private final HBox bottomBox = new HBox();
 
     private boolean editButtonsVisible = false;
+    private MomentsInsertionPopup popup;
 
-    public HoursView(HoursViewController controller) {
+    public MomentsView(MomentsViewController controller) {
         this.controller = controller;
-
-        view.setMinWidth(150);
-        view.setMaxWidth(300);
+        this.view.setMinWidth(100);
 
         this.createEditButton();
         this.createInsertButton();
 
-        view.setBottom(bottomBox);
-        view.getBottom().setVisible(false);
+        this.view.setCenter(listPane);
+        this.view.setBottom(bottomBox);
+        this.view.getBottom().setVisible(false);
     }
 
     public void update(List<String> input) {
-        if (!view.getBottom().isVisible()) {
-            view.getBottom().setVisible(true);
-        }
-        if (!input.isEmpty()) {
-            listBox.getChildren().clear();
+        if(!input.isEmpty()) {
+            VBox listBox = new VBox();
+            listBox.setSpacing(8);
             input.forEach(hour -> {
                 Button button = new Button(hour);
                 button.setOnAction(e -> {
-                    this.onHourButtonClick(button.getText());
+                    this.onMomentButtonClick(button.getText());
                 });
                 listBox.getChildren().add(button);
             });
-            view.setCenter(listBox);
+
+            this.listPane.setContent(listBox);
+            this.view.getBottom().setVisible(true);
         } else {
-            view.setCenter(new Label("No data for selected student"));
+            this.view.setCenter(new Label("Nessun momento trovato"));
         }
     }
 
@@ -57,7 +59,7 @@ public class HoursView implements View<List<String>> {
     }
 
     public void setVisible(Boolean value) {
-        view.setVisible(value);
+        this.view.setVisible(value);
     }
 
     private void createEditButton() {
@@ -87,11 +89,16 @@ public class HoursView implements View<List<String>> {
     }
 
     private void onInsertButtonClick() {
-        new HourInsertionPopup(this.controller);
+        if(this.popup == null){
+            this.popup = new MomentsInsertionPopup(this.controller);
+        }
+        if(!this.popup.isShowing()){
+            this.popup.show();
+        }
     }
 
-    private void onHourButtonClick(final String text) {
-        controller.getData(text);
+    private void onMomentButtonClick(final String text) {
+        this.controller.getData(text);
     }
 
     public boolean isEditButtonsVisible() {

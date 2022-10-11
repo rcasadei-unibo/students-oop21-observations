@@ -1,7 +1,6 @@
 package org.observations.controllers;
 
 import javafx.scene.Node;
-import org.observations.gui.StudentInsertionPopup;
 import org.observations.gui.StudentsView;
 import org.observations.gui.View;
 
@@ -15,7 +14,6 @@ public class StudentsViewController implements SubController<String, List<String
     public StudentsViewController(MainController parent) {
         parentController = parent;
         view = new StudentsView(this);
-        updateView(List.of());
     }
 
     public void updateView(List<String> input) {
@@ -35,13 +33,10 @@ public class StudentsViewController implements SubController<String, List<String
     }
 
     public void getData(final String text) {
-        System.out.println(text);
-        //TODO
-        parentController.updateHoursPanel(text);
+        this.parentController.updateMomentsPanel(text);
     }
 
     public void updateModel(final String output) {
-        System.out.println(output);
-        //TODO
+        this.parentController.insertNewStudent(output);
     }
 }

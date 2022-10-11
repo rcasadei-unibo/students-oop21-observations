@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.observations.controllers.StudentsViewController;
+import org.observations.gui.popup.StudentInsertionPopup;
 
 import java.util.List;
 
@@ -18,7 +19,9 @@ public class StudentsView implements View<List<String>> {
     private final BorderPane view = new BorderPane();
     private final ScrollPane studentsPane = new ScrollPane();
     private final HBox bottomBox = new HBox();
+
     private boolean editButtonsVisible;
+    private StudentInsertionPopup popup;
 
     public StudentsView(StudentsViewController controller) {
         this.controller = controller;
@@ -40,10 +43,8 @@ public class StudentsView implements View<List<String>> {
             input.forEach(student -> {
                 Button button = new Button(student);
                 button.setOnAction(event -> {
-                    System.out.println(button.getText());
                     this.onStudentButtonClick(button.getText());
                 });
-                this.resize(button.getWidth());
                 listBox.getChildren().add(button);
             });
             studentsPane.setContent(listBox);
@@ -81,17 +82,13 @@ public class StudentsView implements View<List<String>> {
         bottomBox.getChildren().add(insertButton);
     }
 
-    private void resize(final double width) {
-        if (width > view.getWidth() && width <= view.getMaxWidth()) {
-            view.prefWidth(width);
-        } else {
-            view.setPrefWidth(view.getMinWidth());
-        }
-    }
-
     private void onInsertButtonClick() {
-        System.out.println("insert student button has been hit");
-        new StudentInsertionPopup(this.controller);
+        if (this.popup == null) {
+            this.popup = new StudentInsertionPopup(this.controller);
+        }
+        if(this.popup.isShowing()){
+            this.popup.show();
+        }
     }
 
     private void onStudentButtonClick(final String text) {

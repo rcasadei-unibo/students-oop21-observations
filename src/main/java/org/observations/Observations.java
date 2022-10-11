@@ -12,7 +12,7 @@ public class Observations extends Application {
 
         stage.setTitle("Observations");
         MainController mainController = new MainController();
-        Scene scene = new Scene((Parent) mainController.getView(), 600, 400);
+        Scene scene = new Scene((Parent) mainController.getView(), 800, 600);
         stage.setScene(scene);
         stage.show();
     }
