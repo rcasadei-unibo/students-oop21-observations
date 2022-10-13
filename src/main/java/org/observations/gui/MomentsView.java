@@ -32,11 +32,10 @@ public class MomentsView implements View<List<String>> {
 
         this.view.setCenter(listPane);
         this.view.setBottom(bottomBox);
-        this.view.getBottom().setVisible(false);
     }
 
     public void update(List<String> input) {
-        if(!input.isEmpty()) {
+        if (!input.isEmpty()) {
             VBox listBox = new VBox();
             listBox.setSpacing(8);
             input.forEach(hour -> {
@@ -46,9 +45,8 @@ public class MomentsView implements View<List<String>> {
                 });
                 listBox.getChildren().add(button);
             });
-
             this.listPane.setContent(listBox);
-            this.view.getBottom().setVisible(true);
+            this.view.setCenter(this.listPane);
         } else {
             this.view.setCenter(new Label("Nessun momento trovato"));
         }
@@ -81,7 +79,7 @@ public class MomentsView implements View<List<String>> {
     }
 
     private void onEditButtonClick() {
-        if(isEditButtonsVisible()){
+        if (isEditButtonsVisible()) {
             //TODO
         } else {
             //TODO
@@ -89,10 +87,10 @@ public class MomentsView implements View<List<String>> {
     }
 
     private void onInsertButtonClick() {
-        if(this.popup == null){
+        if (this.popup == null) {
             this.popup = new MomentsInsertionPopup(this.controller);
         }
-        if(!this.popup.isShowing()){
+        if (!this.popup.isShowing()) {
             this.popup.show();
         }
     }

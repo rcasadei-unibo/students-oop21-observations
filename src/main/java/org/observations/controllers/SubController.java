@@ -33,13 +33,6 @@ public interface SubController<M, I, O> {
     void setViewVisible(Boolean value);
 
     /**
-     * Show/hide buttons to edit data
-     *
-     * @param value
-     */
-    void switchOnOffEditButtons(Boolean value);
-
-    /**
      * Ask data from the model
      *
      * @param text Entry to be satisfied

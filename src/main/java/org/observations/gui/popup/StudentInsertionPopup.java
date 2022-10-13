@@ -14,12 +14,10 @@ import org.observations.controllers.StudentsViewController;
 public class StudentInsertionPopup extends Stage {
 
     private final StudentsViewController controller;
-    String name;
 
     public StudentInsertionPopup(StudentsViewController controller) {
         this.controller = controller;
         this.initOwner(controller.getView().getScene().getWindow());
-        //this.initStyle(StageStyle.UNDECORATED);
         this.setWidth(250);
         this.setHeight(150);
 
@@ -49,6 +47,5 @@ public class StudentInsertionPopup extends Stage {
 
         Scene scene = new Scene(box);
         this.setScene(scene);
-        this.show();
     }
 }

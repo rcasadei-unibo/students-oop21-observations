@@ -27,13 +27,11 @@ public class StudentsView implements View<List<String>> {
         this.controller = controller;
 
         view.setMinWidth(150);
-        view.setMaxWidth(300);
 
         this.createEditButton();
         this.createInsertButton();
 
         view.setBottom(bottomBox);
-        view.getBottom().setVisible(false);
     }
 
     public void update(final List<String> input) {
@@ -48,11 +46,9 @@ public class StudentsView implements View<List<String>> {
                 listBox.getChildren().add(button);
             });
             studentsPane.setContent(listBox);
-            view.getBottom().setVisible(true);
             view.setCenter(studentsPane);
         } else {
             view.setCenter(new Label("No students found"));
-            view.getBottom().setVisible(false);
         }
     }
 
@@ -86,7 +82,7 @@ public class StudentsView implements View<List<String>> {
         if (this.popup == null) {
             this.popup = new StudentInsertionPopup(this.controller);
         }
-        if(this.popup.isShowing()){
+        if (!this.popup.isShowing()) {
             this.popup.show();
         }
     }

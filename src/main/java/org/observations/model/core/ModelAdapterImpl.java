@@ -34,7 +34,6 @@ public class ModelAdapterImpl implements ModelAdapter {
   /**
    * Return the moment list user can choose to observe. 
    */
-  @Override
   public List<String> getMomentsListFromFile() throws IOException {
     return this.mc.getMomentsList();
   }
@@ -42,7 +41,6 @@ public class ModelAdapterImpl implements ModelAdapter {
   /**
    * Return the type list of observations user can choose to observe. 
    */
-  @Override
   public List<String> getTypesListFromFile() throws IOException {
     return this.mc.getTypeList();
   }
@@ -53,7 +51,6 @@ public class ModelAdapterImpl implements ModelAdapter {
    * @param student
    *        string of new student 
    */
-  @Override
   public void createStudent(final String student) throws IOException {
     this.mc.chooseStudent(student);
   }
@@ -64,7 +61,6 @@ public class ModelAdapterImpl implements ModelAdapter {
    * @param moment
    *        string of new moment 
    */
-  @Override
   public void createMoment(final String moment) throws IOException {
     this.mc.chooseMoment(moment);
   }
@@ -75,7 +71,6 @@ public class ModelAdapterImpl implements ModelAdapter {
    * @param date
    *        string of new date 
    */
-  @Override
   public void createDate(final String date) throws IOException {
     this.mc.chooseDate(date);
   }
@@ -86,7 +81,6 @@ public class ModelAdapterImpl implements ModelAdapter {
    * @param type
    *        string of new type of observation 
    */
-  @Override
   public void createObservationsType(final String type) throws IOException {
     this.mc.addObservationType(type);
   }
@@ -100,7 +94,6 @@ public class ModelAdapterImpl implements ModelAdapter {
    * @param type
    *        string of type of observation clicked
    */
-  @Override
   public void clickObservation(final String type) throws IOException {
     final String time = new SimpleDateFormat("HH:mm:ss", Locale.ITALIAN)
         .format(Date.from(Instant.now(Clock.systemDefaultZone())));
@@ -110,9 +103,8 @@ public class ModelAdapterImpl implements ModelAdapter {
   /**
    * return list of all student observed or empty list.
    */
-  @Override
   public List<String> getStudentsList() throws IOException {
-    return mc.getObservedStudents();
+    return this.mc.getObservedStudents();
   }
 
   /**
@@ -121,9 +113,9 @@ public class ModelAdapterImpl implements ModelAdapter {
    * @param student
    *      name of student choose
    */
-  @Override
   public List<String> getMomentsList(final String student) throws IOException {
-    return mc.getObservedMoments();
+    this.mc.chooseStudent(student);
+    return this.mc.getObservedMoments();
   }
 
   /**
@@ -132,7 +124,6 @@ public class ModelAdapterImpl implements ModelAdapter {
    * @param moment
    *      moment choose 
    */
-  @Override
   public Map<String, Map<String, Integer>> getDatesAndObservations(final String moment)
       throws IOException {
     final Map<String, Map<String, Integer>> map = new HashMap<>();

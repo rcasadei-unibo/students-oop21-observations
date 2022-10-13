@@ -30,30 +30,26 @@ public class ObservatonsView implements View<Map<String, Map<String, Integer>>> 
 
     private void setView() {
         this.view.setMinWidth(150);
-        this.createEditButton();
         this.createInsertButton();
-
-        this.view.setCenter(listPane);
         this.view.setBottom(bottomBox);
-        this.view.getBottom().setVisible(false);
     }
 
     public void update(Map<String, Map<String, Integer>> input) {
         if(!input.isEmpty()) {
             VBox listBox = new VBox();
             listBox.setSpacing(8);
-            for (String hour : input.keySet()) {
-                Map<String, Integer> activities = input.get(hour);
+            for (String date : input.keySet()) {
+                Map<String, Integer> activities = input.get(date);
                 for (String activity : activities.keySet()) {
                     Integer observations = activities.get(activity);
-                    listBox.getChildren().add(new ObservationLine((ObservatonsViewController) this.controller, hour, activity, observations).getView());
+                    listBox.getChildren().add(new ObservationLine((ObservatonsViewController) this.controller, date, activity, observations).getView());
                 }
             }
             this.listPane.setContent(listBox);
+            this.view.setCenter(listPane);
         } else {
             this.view.setCenter(new Label("Nessuna osservazione trovata"));
         }
-        this.view.getBottom().setVisible(true);
     }
 
     public Node getView() {
@@ -62,15 +58,6 @@ public class ObservatonsView implements View<Map<String, Map<String, Integer>>> 
 
     public void setVisible(Boolean value) {
         this.view.setVisible(value);
-    }
-
-    private void createEditButton() {
-        Button editButton = new Button("Edit");
-        editButton.setOnAction(event -> {
-            this.onEditButtonClick();
-        });
-        bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
-        bottomBox.getChildren().add(editButton);
     }
 
     private void createInsertButton() {
@@ -82,13 +69,9 @@ public class ObservatonsView implements View<Map<String, Map<String, Integer>>> 
         bottomBox.getChildren().add(insertButton);
     }
 
-    private void onEditButtonClick() {
-        controller.switchOnOffEditButtons(null);
-    }
-
     private void onInsertButtonClick() {
         if(this.popup == null){
-            this.popup = new ObservationInsertionPopup(this.controller);
+            this.popup = new ObservationInsertionPopup((ObservatonsViewController) this.controller);
         }
         if(!this.popup.isShowing()){
             this.popup.show();

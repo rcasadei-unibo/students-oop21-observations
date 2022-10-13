@@ -9,19 +9,19 @@ import java.util.Map;
 
 public class ObservatonsViewController implements SubController<String, Map<String, Map<String, Integer>>, List<String>> {
 
-    private final MainController parentController;
+    private final MainWindowController parentController;
     private final View<Map<String, Map<String, Integer>>> view;
     private List<String> observationTypes;
 
 
-    public ObservatonsViewController(MainController mainController, List<String> observationTypesList) {
-        this.parentController = mainController;
+    public ObservatonsViewController(MainWindowController mainWindowController, List<String> observationTypesList) {
+        this.parentController = mainWindowController;
         this.observationTypes = observationTypesList;
         this.view = new ObservatonsView(this);
-
     }
 
     public void updateView(Map<String, Map<String, Integer>> input) {
+        System.out.println(input);
         view.update(input);
     }
 
@@ -31,11 +31,6 @@ public class ObservatonsViewController implements SubController<String, Map<Stri
 
     public void setViewVisible(Boolean value) {
         view.setVisible(value);
-    }
-
-    @Override
-    public void switchOnOffEditButtons(Boolean value) {
-        //TODO
     }
 
     public void getData(String text) {
