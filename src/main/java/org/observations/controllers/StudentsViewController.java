@@ -17,7 +17,6 @@ public class StudentsViewController implements SubController<String, List<String
     }
 
     public void updateView(List<String> input) {
-        System.out.println(input);
         view.update(input);
     }
 

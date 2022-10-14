@@ -18,7 +18,7 @@ public class MainWindowController {
     private final SubController<String, List<String>, String> momentsViewController;
     private final SubController<String, Map<String, Map<String, Integer>>, List<String>> observationsViewController;
 
-    //private final ChartsWindowController chartsWindowController;
+    private ChartsWindowController chartsWindowController;
     private String lastStudentSelected;
     private String lastMomentSelected;
 
@@ -37,23 +37,60 @@ public class MainWindowController {
         this.studentsViewController = new StudentsViewController(this);
         this.momentsViewController = new MomentsViewController(this, momentsList);
         this.observationsViewController = new ObservatonsViewController(this, observationTypesList);
-        //this.chartsWindowController = new ChartsWindowController(this);
 
         this.momentsViewController.setViewVisible(false);
         this.observationsViewController.setViewVisible(false);
 
         this.updateStudentsPanel();
-        this.view = new MainWindowView(studentsViewController.getView(), momentsViewController.getView(), observationsViewController.getView());
+        this.view = new MainWindowView(this, studentsViewController.getView(), momentsViewController.getView(), observationsViewController.getView());
     }
 
     public Node getView() {
         return view.getView();
     }
 
-    public void setViewVisible(Boolean value) {
+    public List<String> getStudentsList() {
+        try {
+            return this.adapter.getStudentsList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void updateStudentsPanel() {
+    public List<String> getMomentList(String student) {
+        try {
+            return this.adapter.getMomentsList(student);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Map<String, Map<String, Integer>> getDateAndObservationsList(String moment) {
+        try {
+            return this.adapter.getDatesAndObservations(moment);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void updateStudentsPanel() {
+        studentsViewController.updateView(this.getStudentsList());
+    }
+
+    void updateMomentsPanel(String student) {
+        this.lastStudentSelected = student;
+        momentsViewController.updateView(this.getMomentList(student));
+        this.momentsViewController.setViewVisible(true);
+        this.observationsViewController.setViewVisible(false);
+    }
+
+    void updateObservationsPanel(String moment) {
+        this.lastMomentSelected = moment;
+        observationsViewController.updateView(this.getDateAndObservationsList(moment));
+        this.observationsViewController.setViewVisible(true);
+    }
+
+    /*private void updateStudentsPanel() {
         try {
             studentsViewController.updateView(adapter.getStudentsList());
         } catch (IOException e) {
@@ -80,9 +117,9 @@ public class MainWindowController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
-    public void incrementObservationCount(String observationType) {
+    void incrementObservationCount(String observationType) {
         try {
             adapter.clickObservation(observationType);
             this.updateObservationsPanel(this.lastMomentSelected);
@@ -91,7 +128,7 @@ public class MainWindowController {
         }
     }
 
-    public void decrementObservationCount(String observationType) {
+    void decrementObservationCount(String observationType) {
 
     }
 
@@ -132,13 +169,16 @@ public class MainWindowController {
         }
     }
 
-    /*public void showChartsWindow() {
+    public void showChartsWindow() {
+        if(this.chartsWindowController == null){
+            this.chartsWindowController = new ChartsWindowController(this);
+        }
         if (!chartsWindowController.isShowing()) {
             this.chartsWindowController.showWindow();
         } else {
             this.chartsWindowController.hideWindow();
         }
-    }*/
+    }
 
     public Map<String, Map<String, Map<String, Map<String, Integer>>>> getAllData() {
         Map<String, Map<String, Map<String, Map<String, Integer>>>> data = new HashMap<>();
