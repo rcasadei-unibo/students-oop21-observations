@@ -17,8 +17,6 @@ public class MainWindowController {
     private final SubController<String, List<String>, String> studentsViewController;
     private final SubController<String, List<String>, String> momentsViewController;
     private final SubController<String, Map<String, Map<String, Integer>>, List<String>> observationsViewController;
-
-    //private final ChartsWindowController chartsWindowController;
     private String lastStudentSelected;
     private String lastMomentSelected;
 
@@ -37,25 +35,21 @@ public class MainWindowController {
         this.studentsViewController = new StudentsViewController(this);
         this.momentsViewController = new MomentsViewController(this, momentsList);
         this.observationsViewController = new ObservatonsViewController(this, observationTypesList);
-        //this.chartsWindowController = new ChartsWindowController(this);
 
         this.momentsViewController.setViewVisible(false);
         this.observationsViewController.setViewVisible(false);
 
         this.updateStudentsPanel();
-        this.view = new MainWindowView(studentsViewController.getView(), momentsViewController.getView(), observationsViewController.getView());
+        this.view = new MainWindowView(this.studentsViewController.getView(), this.momentsViewController.getView(), this.observationsViewController.getView());
     }
 
     public Node getView() {
         return view.getView();
     }
 
-    public void setViewVisible(Boolean value) {
-    }
-
     public void updateStudentsPanel() {
         try {
-            studentsViewController.updateView(adapter.getStudentsList());
+            this.studentsViewController.updateView(adapter.getStudentsList());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -64,7 +58,7 @@ public class MainWindowController {
     public void updateMomentsPanel(String student) {
         this.lastStudentSelected = student;
         try {
-            momentsViewController.updateView((adapter.getMomentsList(student)));
+            this.momentsViewController.updateView((adapter.getMomentsList(student)));
             this.momentsViewController.setViewVisible(true);
             this.observationsViewController.setViewVisible(false);
         } catch (IOException e) {
@@ -131,14 +125,6 @@ public class MainWindowController {
             throw new RuntimeException(e);
         }
     }
-
-    /*public void showChartsWindow() {
-        if (!chartsWindowController.isShowing()) {
-            this.chartsWindowController.showWindow();
-        } else {
-            this.chartsWindowController.hideWindow();
-        }
-    }*/
 
     public Map<String, Map<String, Map<String, Map<String, Integer>>>> getAllData() {
         Map<String, Map<String, Map<String, Map<String, Integer>>>> data = new HashMap<>();

@@ -1,7 +1,7 @@
 package org.observations.controllers;
 
 import javafx.scene.Node;
-import org.observations.gui.ObservatonsView;
+import org.observations.gui.ObservationsView;
 import org.observations.gui.View;
 
 import java.util.List;
@@ -11,13 +11,13 @@ public class ObservatonsViewController implements SubController<String, Map<Stri
 
     private final MainWindowController parentController;
     private final View<Map<String, Map<String, Integer>>> view;
-    private List<String> observationTypes;
+    private final List<String> observationTypes;
 
 
     public ObservatonsViewController(MainWindowController mainWindowController, List<String> observationTypesList) {
         this.parentController = mainWindowController;
         this.observationTypes = observationTypesList;
-        this.view = new ObservatonsView(this);
+        this.view = new ObservationsView(this);
     }
 
     public void updateView(Map<String, Map<String, Integer>> input) {

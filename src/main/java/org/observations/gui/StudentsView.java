@@ -17,21 +17,16 @@ public class StudentsView implements View<List<String>> {
 
     private final StudentsViewController controller;
     private final BorderPane view = new BorderPane();
-    private final ScrollPane studentsPane = new ScrollPane();
+    private final ScrollPane listPane = new ScrollPane();
     private final HBox bottomBox = new HBox();
-
-    private boolean editButtonsVisible;
     private StudentInsertionPopup popup;
 
     public StudentsView(StudentsViewController controller) {
         this.controller = controller;
-
-        view.setMinWidth(150);
-
-        this.createEditButton();
+        this.view.setMinWidth(150);
         this.createInsertButton();
-
-        view.setBottom(bottomBox);
+        this.view.setCenter(listPane);
+        this.view.setBottom(bottomBox);
     }
 
     public void update(final List<String> input) {
@@ -40,15 +35,12 @@ public class StudentsView implements View<List<String>> {
             listBox.setSpacing(8);
             input.forEach(student -> {
                 Button button = new Button(student);
-                button.setOnAction(event -> {
-                    this.onStudentButtonClick(button.getText());
-                });
+                button.setOnAction(event -> this.onStudentButtonClick(button.getText()));
                 listBox.getChildren().add(button);
             });
-            studentsPane.setContent(listBox);
-            view.setCenter(studentsPane);
+            this.listPane.setContent(listBox);
         } else {
-            view.setCenter(new Label("No students found"));
+            this.view.setCenter(new Label("No students found"));
         }
     }
 
@@ -60,20 +52,9 @@ public class StudentsView implements View<List<String>> {
         view.setVisible(value);
     }
 
-    private void createEditButton() {
-        Button editButton = new Button("Edit");
-        editButton.setOnAction(event -> {
-            this.onEditButtonClick();
-        });
-        bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
-        bottomBox.getChildren().add(editButton);
-    }
-
     private void createInsertButton() {
         Button insertButton = new Button("+");
-        insertButton.setOnAction(event -> {
-            this.onInsertButtonClick();
-        });
+        insertButton.setOnAction(event -> this.onInsertButtonClick());
         bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
         bottomBox.getChildren().add(insertButton);
     }
@@ -90,17 +71,4 @@ public class StudentsView implements View<List<String>> {
     private void onStudentButtonClick(final String text) {
         controller.getData(text);
     }
-
-    private void onEditButtonClick() {
-        //TODO
-    }
-
-    public boolean isEditButtonsVisible() {
-        return editButtonsVisible;
-    }
-
-    public void setEditButtonsVisible(boolean editButtonsVisible) {
-        this.editButtonsVisible = editButtonsVisible;
-    }
-
 }

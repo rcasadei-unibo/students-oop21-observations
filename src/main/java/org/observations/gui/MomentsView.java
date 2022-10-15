@@ -19,15 +19,11 @@ public class MomentsView implements View<List<String>> {
     private final BorderPane view = new BorderPane();
     private final ScrollPane listPane = new ScrollPane();
     private final HBox bottomBox = new HBox();
-
-    private boolean editButtonsVisible = false;
     private MomentsInsertionPopup popup;
 
     public MomentsView(MomentsViewController controller) {
         this.controller = controller;
         this.view.setMinWidth(100);
-
-        this.createEditButton();
         this.createInsertButton();
 
         this.view.setCenter(listPane);
@@ -40,9 +36,7 @@ public class MomentsView implements View<List<String>> {
             listBox.setSpacing(8);
             input.forEach(hour -> {
                 Button button = new Button(hour);
-                button.setOnAction(e -> {
-                    this.onMomentButtonClick(button.getText());
-                });
+                button.setOnAction(event -> this.onMomentButtonClick(button.getText()));
                 listBox.getChildren().add(button);
             });
             this.listPane.setContent(listBox);
@@ -53,37 +47,18 @@ public class MomentsView implements View<List<String>> {
     }
 
     public Node getView() {
-        return view;
+        return this.view;
     }
 
     public void setVisible(Boolean value) {
         this.view.setVisible(value);
     }
 
-    private void createEditButton() {
-        Button editButton = new Button("Edit");
-        editButton.setOnAction(event -> {
-            this.onEditButtonClick();
-        });
-        bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
-        bottomBox.getChildren().add(editButton);
-    }
-
     private void createInsertButton() {
         Button insertButton = new Button("+");
-        insertButton.setOnAction(event -> {
-            this.onInsertButtonClick();
-        });
+        insertButton.setOnAction(event -> this.onInsertButtonClick());
         bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
         bottomBox.getChildren().add(insertButton);
-    }
-
-    private void onEditButtonClick() {
-        if (isEditButtonsVisible()) {
-            //TODO
-        } else {
-            //TODO
-        }
     }
 
     private void onInsertButtonClick() {
@@ -97,13 +72,5 @@ public class MomentsView implements View<List<String>> {
 
     private void onMomentButtonClick(final String text) {
         this.controller.getData(text);
-    }
-
-    public boolean isEditButtonsVisible() {
-        return editButtonsVisible;
-    }
-
-    public void setEditButtonsVisible(boolean editButtonsVisible) {
-        this.editButtonsVisible = editButtonsVisible;
     }
 }
