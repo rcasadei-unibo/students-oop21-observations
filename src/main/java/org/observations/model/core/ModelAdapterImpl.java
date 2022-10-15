@@ -1,18 +1,14 @@
 package org.observations.model.core;
 
+import org.observations.model.ModelAdapter;
+import org.observations.model.ModelCore;
+import org.observations.model.utility.Pair;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Clock;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import org.observations.model.ModelAdapter;
-import org.observations.model.ModelCore;
-import org.observations.model.utility.Pair;
+import java.util.*;
 
 /**
  * Class for adapt data send from view to model.
@@ -108,7 +104,7 @@ public class ModelAdapterImpl implements ModelAdapter {
   }
 
   /**
-   * return map: key is the student choose, value is list of moment observed for the student.
+   * return list of moment observed for the student.
 
    * @param student
    *      name of student choose
@@ -128,7 +124,7 @@ public class ModelAdapterImpl implements ModelAdapter {
       throws IOException {
     final Map<String, Map<String, Integer>> map = new HashMap<>();
     this.mc.chooseMoment(moment);
-    final List<String> list = List.copyOf(this.listMaker(this.mc.getCounterDates()));
+    final List<String> list = this.mc.getObservedDates();
     for (final String element : list) {
       this.mc.chooseDate(element);
       final Map<String, Integer> mapValue = new HashMap<>();
@@ -138,20 +134,6 @@ public class ModelAdapterImpl implements ModelAdapter {
       map.put(element, mapValue);
     }
     return map;
-  }
-
-  /**
-   * make list of all string from List of Pair, use only getX() for the string attribute.
-
-   * @param list
-   *      need the list of pair to convert
-   */
-  private List<String> listMaker(final List<Pair<String, Integer>> list) {
-    final List<String> fList = new ArrayList<>();
-    for (final Pair<String, Integer> pair : list) {
-      fList.add(pair.getX());
-    }
-    return fList;
   }
 
 }

@@ -1,11 +1,12 @@
 package org.observations.model.utility;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import org.observations.model.Loader;
 import org.observations.model.Saved;
 import org.observations.model.Updater;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Updater class for all string passed, create and manage all file in all class.
@@ -39,17 +40,6 @@ public class UpdaterImpl implements Updater {
   }
 
   /**
-   * Return list of String for the selected path.
-
-   * @param path loader
-   *     path selected for load all file
-   *     loader: reference to class for load file
-   */
-  private List<String> check(final String path, final Loader loader) {
-    return loader.loadFileFolder(path);
-  }
-
-  /**
    * Choose or create the student pass.
 
    * @param student save loader
@@ -60,6 +50,7 @@ public class UpdaterImpl implements Updater {
   public void chooseStudent(final String student, final Saved save, final Loader loader)
       throws IOException {
     final String studentChoose = this.studentRoot + student + this.sep;
+    this.reset();
     if (!loader.loadFileFolder(this.studentRoot).contains(student)) {
       save.makeDir(studentChoose);
     } else {
@@ -81,6 +72,7 @@ public class UpdaterImpl implements Updater {
   public void chooseMoment(final String moment, final List<String> updateList,
       final Saved save, final Loader loader) throws IOException {
     this.moment = this.momentRoot + moment + this.sep;
+    this.resetDate();
     if (!loader.loadFileFolder(this.momentRoot).contains(moment) && !moment.isBlank()) {
       save.makeDir(this.moment);
       if (!updateList.contains(moment)) {
@@ -173,6 +165,17 @@ public class UpdaterImpl implements Updater {
   }
 
   /**
+   * Return list of String for the selected path.
+
+   * @param path loader
+   *     path selected for load all file
+   *     loader: reference to class for load file
+   */
+  private List<String> check(final String path, final Loader loader) {
+    return loader.loadFileFolder(path);
+  }
+  
+  /**
    * Private method for control for item present, return empty list or list.
    */
   private List<String> observed(final String observed, final List<String> returnOk) {
@@ -181,4 +184,30 @@ public class UpdaterImpl implements Updater {
     }
     return returnOk;
   }
+
+  /**
+   * Full Reset. 
+   */
+  public void reset() {
+    this.moment = "";
+    this.momentRoot = "";
+    this.resetDate();
+  }
+
+  /**
+   * Reset date and date root.
+   */
+  public void resetDate() {
+    this.date = "";
+    this.dateRoot = "";
+  }
+  
+  /**
+   * Only for test. 
+   */
+  public void stamp() {
+    System.out.println(this.moment + "\n" + this.date + "\n" 
+        + this.momentRoot + "\n" + this.dateRoot);
+  }
+  
 }

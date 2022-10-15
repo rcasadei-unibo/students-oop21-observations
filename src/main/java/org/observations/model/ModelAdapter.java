@@ -73,7 +73,7 @@ public interface ModelAdapter {
   List<String> getStudentsList() throws IOException;
 
   /**
-   * return map: key is the student choose, value is list of moment observed for the student.
+   * return list of moment observed for the student.
 
    * @param student
    *      name of student choose

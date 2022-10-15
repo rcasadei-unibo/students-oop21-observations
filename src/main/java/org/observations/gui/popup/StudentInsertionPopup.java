@@ -21,20 +21,22 @@ public class StudentInsertionPopup extends Stage {
         this.setWidth(250);
         this.setHeight(150);
 
-        Label popupMessage = new Label("Insert a student name");
-        Button confirmButton = new Button("Insert student");
-        Button cancelButton = new Button("Cancel");
+        Label popupMessage = new Label("Inserisci nome e cognome studente");
+        Button confirmButton = new Button("Inserisci studente");
+        Button cancelButton = new Button("Cancella azione");
         TextField name = new TextField();
         TextField surname = new TextField();
-        name.setPromptText("name");
-        surname.setPromptText("surname");
+        name.setPromptText("Inserisci nome");
+        surname.setPromptText("Inserisci cognome");
 
         confirmButton.setOnAction(event -> {
             if (!surname.getText().isEmpty() && !name.getText().isEmpty()) {
-                controller.updateModel(surname.getText() + " " + name.getText());
+                controller.updateModel(name.getText() + " " + surname.getText());
+                name.clear();
+                surname.clear();
                 this.close();
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Both fields must be filled.");
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Entrambi i campi devono essere riempiti.");
                 alert.show();
             }
         });

@@ -21,7 +21,7 @@ public class ObservatonsViewController implements SubController<String, Map<Stri
     }
 
     public void updateView(Map<String, Map<String, Integer>> input) {
-        System.out.println(input);
+        System.out.println("Osservazioni: " + input);
         view.update(input);
     }
 
