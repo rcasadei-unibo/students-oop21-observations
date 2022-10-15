@@ -1,8 +1,9 @@
 package org.observations.model;
 
+import org.observations.model.utility.Pair;
+
 import java.io.IOException;
 import java.util.List;
-import org.observations.model.utility.Pair;
 
 /**
  * Model core create all class need and pass reference for create, write, save and load.
@@ -116,8 +117,24 @@ public interface ModelCore {
    */
   List<Pair<String, Integer>> getCounterStudents() throws IOException;
   
+  /**
+   * Return list of all students observed. 
+   */
   List<String> getObservedStudents();
   
+  /**
+   * Return list of all moments observed for the current student. 
+   */
   List<String> getObservedMoments();
+  
+  /**
+   * Return list of all dates observed for the current student and moment. 
+   */
+  List<String> getObservedDates();
+  
+  /**
+   * Only for test. 
+   */
+  void stamp();
 
 }

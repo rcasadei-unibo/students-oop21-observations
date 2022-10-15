@@ -1,11 +1,12 @@
 package org.observations.model.utility;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import org.observations.model.Loader;
 import org.observations.model.Saved;
 import org.observations.model.Updater;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Updater class for all string passed, create and manage all file in all class.

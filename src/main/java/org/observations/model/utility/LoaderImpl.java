@@ -1,13 +1,10 @@
 package org.observations.model.utility;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import org.observations.model.Loader;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import org.observations.model.Loader;
 
 /**
  * Simple class for load file and folder from root.

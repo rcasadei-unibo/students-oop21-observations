@@ -1,17 +1,14 @@
 package org.observations.model.core;
 
+import org.observations.model.ModelAdapter;
+import org.observations.model.ModelCore;
+import org.observations.model.utility.Pair;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Clock;
 import java.time.Instant;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import org.observations.model.ModelAdapter;
-import org.observations.model.ModelCore;
-import org.observations.model.utility.Pair;
+import java.util.*;
 
 /**
  * Class for adapt data send from view to model.
