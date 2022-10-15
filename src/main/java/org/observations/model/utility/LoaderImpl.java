@@ -23,7 +23,7 @@ public class LoaderImpl implements Loader {
    */
   public List<String> loadFileFolder(final String dir) {
     final List<String> listFileFolder = new ArrayList<>();
-    if (new File(dir).exists()) {
+    if (!dir.isBlank() && new File(dir).exists()) {
       for (final String e : new File(dir).list()) {
         listFileFolder.add(e);
       }
@@ -39,12 +39,12 @@ public class LoaderImpl implements Loader {
    *      directory path for reading file 
    */
   private BufferedReader readFile(final String path) throws FileNotFoundException {
-    if (!new File(path).exists()) {
+    if (!new File(path).exists() && !path.isBlank()) {
       final File file = new File(path);
       try {
         file.createNewFile();
       } catch (IOException e) {
-        System.out.println("Impossibile create file " + new File(path).getName());
+        System.out.println("Impossible create file " + path);
         e.printStackTrace();
       }
     }

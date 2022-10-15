@@ -49,6 +49,7 @@ public class UpdaterImpl implements Updater {
   public void chooseStudent(final String student, final Saved save, final Loader loader)
       throws IOException {
     final String studentChoose = this.studentRoot + student + this.sep;
+    this.reset();
     if (!loader.loadFileFolder(this.studentRoot).contains(student)) {
       save.makeDir(studentChoose);
     } else {
@@ -70,6 +71,7 @@ public class UpdaterImpl implements Updater {
   public void chooseMoment(final String moment, final List<String> updateList,
       final Saved save, final Loader loader) throws IOException {
     this.moment = this.momentRoot + moment + this.sep;
+    this.resetDate();
     if (!loader.loadFileFolder(this.momentRoot).contains(moment) && !moment.isBlank()) {
       save.makeDir(this.moment);
       if (!updateList.contains(moment)) {
@@ -181,4 +183,30 @@ public class UpdaterImpl implements Updater {
     }
     return returnOk;
   }
+
+  /**
+   * Full Reset. 
+   */
+  public void reset() {
+    this.moment = "";
+    this.momentRoot = "";
+    this.resetDate();
+  }
+
+  /**
+   * Reset date and date root.
+   */
+  public void resetDate() {
+    this.date = "";
+    this.dateRoot = "";
+  }
+  
+  /**
+   * Only for test. 
+   */
+  public void stamp() {
+    System.out.println(this.moment + "\n" + this.date + "\n" 
+        + this.momentRoot + "\n" + this.dateRoot);
+  }
+  
 }
