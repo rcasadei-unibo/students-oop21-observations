@@ -42,11 +42,9 @@ public class ModelCoreImpl implements ModelCore {
 
   private String student = "";
   private String moment = "";
-  private String date = "";
 
   private String tempStudent = "";
   private String tempMoment = "";
-  private String tempDate = "";
 
   /**
    * create new object for counter, save and loader, first start and updater with parameter need.
@@ -85,7 +83,6 @@ public class ModelCoreImpl implements ModelCore {
   public void chooseStudent(final String student) throws IOException {
     this.student = student;
     this.updater.chooseStudent(student, this.save, this.loader);
-    this.resetMoment();
   }
 
   /**
@@ -97,7 +94,6 @@ public class ModelCoreImpl implements ModelCore {
   public void chooseMoment(final String moment) throws IOException {
     this.moment = moment;
     this.updater.chooseMoment(moment, this.getMomentsList(), this.save, this.loader);
-    this.resetDate();
   }
 
   /**
@@ -107,7 +103,6 @@ public class ModelCoreImpl implements ModelCore {
    *      date choose/selected for selected student and moment 
    */
   public void chooseDate(final String date) throws IOException {
-    this.date = date;
     this.updater.chooseDate(date + EXTENSION, this.save, this.loader);
   }
 
@@ -138,7 +133,7 @@ public class ModelCoreImpl implements ModelCore {
    * return a copy of list of all observation for current student, moment and date choose.
    */
   public List<String> getDataDayChoose() throws IOException {
-    return this.updater.getObservedDay(this.loader);
+    return new ArrayList<>(List.copyOf(this.updater.getObservedDay(this.loader)));
   }
 
   /**
@@ -178,9 +173,6 @@ public class ModelCoreImpl implements ModelCore {
    * It can be used for refresh counter view for date button.
    */
   public List<Pair<String, Integer>> getCounterDates() throws IOException {
-    if (this.tempDate.isBlank() && !this.date.isBlank()) {
-      this.tempDate = this.date;
-    }
     final List<Pair<String, Integer>> list = new ArrayList<>();
     for (final String element : this.getObservedDates()) {
       this.chooseDate(element);
@@ -190,10 +182,6 @@ public class ModelCoreImpl implements ModelCore {
         sum += pair.getY();
       }
       list.add(new Pair<>(element, sum));
-    }
-    if (!this.tempDate.isBlank() && this.tempMoment.isBlank()) {
-      this.refreshStudent(this.student, this.moment, this.tempDate);
-      this.resetTempDate();
     }
     return list;
   }
@@ -205,9 +193,8 @@ public class ModelCoreImpl implements ModelCore {
    * It can be used for refresh counter view for moment button.
    */
   public List<Pair<String, Integer>> getCounterMoments() throws IOException {
-    if (this.tempMoment.isBlank() && !this.moment.isBlank()) {
+    if (this.tempStudent.isBlank()) {
       this.tempMoment = this.moment;
-      this.tempDate = this.date;
     }
     final List<Pair<String, Integer>> list = new ArrayList<>();
     for (final String element : this.getObservedMoments()) {
@@ -219,9 +206,9 @@ public class ModelCoreImpl implements ModelCore {
       }
       list.add(new Pair<>(element, sum));
     }
-    if (!this.tempMoment.isBlank() && this.tempStudent.isBlank()) {
-      this.refreshStudent(this.student, this.tempMoment, this.tempDate);
-      this.resetTempMoment();
+    if (this.tempStudent.isBlank()) {
+      this.refreshMoment(this.tempMoment);
+      this.resetMoment();
     }
     return list;
   }
@@ -233,7 +220,10 @@ public class ModelCoreImpl implements ModelCore {
    * It can be used for refresh counter view for student button.
    */
   public List<Pair<String, Integer>> getCounterStudents() throws IOException {
-    isStudentSelected();
+    if (this.tempStudent.isBlank() && !this.student.isBlank()) { //check if student not selected yet
+      tempStudent = this.student;
+      tempMoment = this.moment;
+    }
     final List<Pair<String, Integer>> list = new ArrayList<>();
     for (final String element : this.getObservedStudents()) {
       this.chooseStudent(element);
@@ -244,34 +234,10 @@ public class ModelCoreImpl implements ModelCore {
       }
       list.add(new Pair<>(element, sum));
     }
-    isStudentSelectedReset();
-    return list;
-  }
-
-  /**
-   * Return list of all students observed. 
-   */
-  public List<String> getObservedStudents() {
-    return this.updater.getObservedStudents(this.loader);
-  }
-
-  /**
-   * Return list of all moments observed for the current student. 
-   */
-  public List<String> getObservedMoments() {
-    return this.updater.getObservedMoments(this.loader);
-  }
-
-  /**
-   * Return list of all dates observed for the current student and moment. 
-   */
-  public List<String> getObservedDates() {
-    final List<String> list = new ArrayList<>();
-    for (final String string : this.updater.getObservedDates(this.loader)) {
-      final String s;
-      s = string.substring(0, string.length() - 4);
-      list.add(s);
+    if (this.tempStudent.isBlank() && !this.student.isBlank()) {
+      this.refreshStudent(this.tempStudent, this.tempMoment); //reset temporary variable
     }
+    this.resetStudent();
     return list;
   }
 
@@ -279,20 +245,12 @@ public class ModelCoreImpl implements ModelCore {
    * Return list of all observation for all date observed for the student and moment choose. 
    */
   private List<String> momentObservations() throws IOException {
-    if (this.tempStudent.isBlank() && this.tempMoment.isBlank() && !this.moment.isBlank()) {
-      this.tempMoment = this.moment;
-      this.tempDate = this.date;
-    }
     final List<String> list = new ArrayList<>();
     for (final String e : this.getObservedDates()) {
       this.chooseDate(e);
       list.addAll(this.getDataDayChoose());
     }
     list.sort((a, b) -> a.compareTo(b));
-    if (!this.tempMoment.isBlank() && this.tempStudent.isBlank()) {
-      this.refreshStudent(this.student, this.tempMoment, this.tempDate);
-      this.resetTempMoment();
-    }
     return list;
   }
 
@@ -300,33 +258,43 @@ public class ModelCoreImpl implements ModelCore {
    * Return list of all observation for all dates and all moments observed for the current student. 
    */
   private List<String> studentObservations() throws IOException {
-    this.isStudentSelected();
+    this.tempMoment = this.moment;
     final List<String> list = new ArrayList<>();
     for (final String e : this.getObservedMoments()) {
       this.chooseMoment(e);
       list.addAll(this.momentObservations());
     }
     list.sort((a, b) -> a.compareTo(b));
-    this.isStudentSelectedReset();
+    this.refreshMoment(this.tempMoment);
+    this.resetMoment();
     return list;
   }
-  
-  private void isStudentSelected() {
-    if (!this.student.isBlank() && this.tempStudent.isBlank()) { //check if student selected
-      this.tempStudent = this.student;
-      this.tempMoment = this.moment;
-      this.tempDate = this.date;
-    }
+
+  /**
+   * Return list of all students observed. 
+   */
+  public List<String> getObservedStudents() {
+    return new ArrayList<>(List.copyOf(this.updater.getObservedStudents(this.loader)));
   }
 
-  private void isStudentSelectedReset() throws IOException {
-    if (!this.tempStudent.isBlank()) {
-      this.refreshStudent(this.tempStudent, this.tempMoment, this.tempDate); //reset temp var
-    } else {
-      this.updater.reset();
-      this.resetStudent();
+  /**
+   * Return list of all moments observed for the current student. 
+   */
+  public List<String> getObservedMoments() {
+    return new ArrayList<>(List.copyOf(this.updater.getObservedMoments(this.loader)));
+  }
+
+  /**
+   * Return list of all dates observed for the current student and moment. 
+   */
+  private List<String> getObservedDates() {
+    final List<String> list = new ArrayList<>();
+    for (final String string : List.copyOf(this.updater.getObservedDates(this.loader))) {
+      final String s;
+      s = string.substring(0, string.length() - 4);
+      list.add(s);
     }
-    this.resetTempStudent();
+    return list;
   }
 
   /**
@@ -336,10 +304,10 @@ public class ModelCoreImpl implements ModelCore {
    *      student choose
    *      moment choose 
    */
-  private void refreshStudent(final String stud, final String mom, final String date)
-      throws IOException {
-    this.chooseStudent(stud);
-    this.refreshMoment(mom, date);
+  private void refreshStudent(final String stud, final String mom) throws IOException {
+    this.student = stud;
+    this.chooseStudent(this.student);
+    this.refreshMoment(mom);
   }
 
   /**
@@ -348,20 +316,16 @@ public class ModelCoreImpl implements ModelCore {
    * @param mom
    *      moment choose 
    */
-  private void refreshMoment(final String mom, final String date) throws IOException {
-    this.chooseMoment(mom);
-    this.refreshDate(date);
+  private void refreshMoment(final String mom) throws IOException {
+    this.moment = mom;
+    this.chooseMoment(this.moment);
   }
 
-  private void refreshDate(final String date) throws IOException {
-    this.chooseDate(date);
-  }
-  
   /**
    * simple reset for student for access control.
    */
   private void resetStudent() {
-    this.student = "";
+    this.tempStudent = "";
     this.resetMoment();
   }
   
@@ -369,45 +333,7 @@ public class ModelCoreImpl implements ModelCore {
    * simple reset for moment for access control.
    */
   private void resetMoment() {
-    this.moment = "";
-    this.resetDate();
-  }
-  
-  /**
-   * simple reset for date for access control.
-   */
-  private void resetDate() {
-    this.date = "";
+    this.tempMoment = "";
   }
 
-  /**
-   * simple reset for tempStudent for access control.
-   */
-  private void resetTempStudent() {
-    this.tempStudent = "";
-    this.resetTempMoment();
-  }
-  
-  /**
-   * simple reset for tempMoment for access control.
-   */
-  private void resetTempMoment() {
-    this.tempMoment = "";
-    this.resetTempDate();
-  }
-  
-  /**
-   * simple reset for tempDate for access control.
-   */
-  private void resetTempDate() {
-    this.tempDate = "";
-  }
-  
-  /**
-   * Only for test. 
-   */
-  public void stamp() {
-    //System.out.println("temp  " + this.tempStudent + " " + this.tempMoment + " " + this.tempDate);
-    this.updater.stamp();
-  }
 }

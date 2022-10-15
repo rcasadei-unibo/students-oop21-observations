@@ -1,17 +1,14 @@
 package org.observations.gui;
 
 import javafx.scene.Node;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 
 public class MainView implements View<Boolean> {
 
-    BorderPane view = new BorderPane();
+    HBox view = new HBox();
 
-    public MainView(Node menuBar, Node students, Node dates, Node observations) {
-        this.view.setTop(menuBar);
-        this.view.setLeft(students);
-        this.view.setCenter(dates);
-        this.view.setRight(observations);
+    public MainView(Node studentPanel, Node momentsPanel, Node observationsPanel) {
+        this.view.getChildren().addAll(studentPanel, momentsPanel, observationsPanel);
     }
 
     public void update(Boolean input) {

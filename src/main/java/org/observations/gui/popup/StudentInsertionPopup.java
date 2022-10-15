@@ -1,30 +1,23 @@
-package org.observations.gui;
+package org.observations.gui.popup;
 
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.stage.Popup;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.observations.controllers.StudentsViewController;
 
 public class StudentInsertionPopup extends Stage {
 
     private final StudentsViewController controller;
-    String name;
 
     public StudentInsertionPopup(StudentsViewController controller) {
         this.controller = controller;
         this.initOwner(controller.getView().getScene().getWindow());
-        //this.initStyle(StageStyle.UNDECORATED);
         this.setWidth(250);
         this.setHeight(150);
 
@@ -54,6 +47,5 @@ public class StudentInsertionPopup extends Stage {
 
         Scene scene = new Scene(box);
         this.setScene(scene);
-        this.show();
     }
 }

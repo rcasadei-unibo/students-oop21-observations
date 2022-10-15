@@ -1,4 +1,4 @@
-package org.observations.gui;
+package org.observations.gui.popup;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -6,31 +6,27 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.observations.controllers.HoursViewController;
+import org.observations.controllers.MomentsViewController;
 
-public class HourInsertionPopup extends Stage {
+public class MomentsInsertionPopup extends Stage {
 
-    private final HoursViewController controller;
+    private final MomentsViewController controller;
 
-    public HourInsertionPopup(HoursViewController controller) {
+    public MomentsInsertionPopup(MomentsViewController controller) {
 
         this.controller = controller;
         this.initOwner(controller.getView().getScene().getWindow());
-        //this.initStyle(StageStyle.UNDECORATED);
         this.setWidth(250);
         this.setHeight(150);
 
-        Label popupMessage = new Label("Select a hour");
-        Button confirmButton = new Button("Insert");
-        Button cancelButton = new Button("Cancel");
-        ComboBox<Integer> comboBox = new ComboBox<>();
-
-        for (int i = 6; i < 20; i++) {
-            comboBox.getItems().add(i);
-        }
+        Label popupMessage = new Label("Seleziona un momento");
+        Button confirmButton = new Button("Inserisci");
+        Button cancelButton = new Button("Cancella");
+        ComboBox<String> comboBox = new ComboBox<>();
+        comboBox.getItems().addAll(this.controller.getMomentList());
 
         confirmButton.setOnAction(event -> {
-            controller.updateModel(comboBox.getSelectionModel().getSelectedItem().toString());
+            controller.updateModel(comboBox.getSelectionModel().getSelectedItem());
             this.close();
         });
 
@@ -42,6 +38,5 @@ public class HourInsertionPopup extends Stage {
 
         Scene scene = new Scene(box);
         this.setScene(scene);
-        this.show();
     }
 }

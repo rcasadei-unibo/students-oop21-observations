@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import org.observations.model.Loader;
 import org.observations.model.ModelAdapter;
 import org.observations.model.ModelCore;
@@ -164,13 +165,13 @@ public class Test {
     final ModelAdapter ma = new ModelAdapterImpl();
     assertEquals(2, ma.getStudentsList().size());
     System.out.println(ma.getStudentsList());
-    List<String> map = ma.getMomentsList(PIPPO);
-    assertEquals(3, map.size());
+    Map<String, List<String>> map = ma.getMomentsList(PIPPO);
+    assertEquals(3, map.get(PIPPO).size());
     map = ma.getMomentsList(PLUTO);
-    assertEquals(0, map.size());
+    assertEquals(0, map.get(PLUTO).size());
     map = ma.getMomentsList(PIPPO);
     System.out.println(ma.getDatesAndObservations(PROVA));
-    assertEquals(3, map.size());
+    assertEquals(3, map.get(PIPPO).size());
   }
   
 }

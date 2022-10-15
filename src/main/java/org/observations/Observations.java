@@ -4,15 +4,15 @@ import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.observations.controllers.MainController;
+import org.observations.controllers.MainWindowController;
 
 public class Observations extends Application {
     @Override
     public void start(Stage stage) {
 
         stage.setTitle("Observations");
-        MainController mainController = new MainController();
-        Scene scene = new Scene((Parent) mainController.getView(), 600, 400);
+        MainWindowController mainWindowController = new MainWindowController();
+        Scene scene = new Scene((Parent) mainWindowController.getView(), 800, 600);
         stage.setScene(scene);
         stage.show();
     }

@@ -116,24 +116,8 @@ public interface ModelCore {
    */
   List<Pair<String, Integer>> getCounterStudents() throws IOException;
   
-  /**
-   * Return list of all students observed. 
-   */
   List<String> getObservedStudents();
   
-  /**
-   * Return list of all moments observed for the current student. 
-   */
   List<String> getObservedMoments();
-  
-  /**
-   * Return list of all dates observed for the current student and moment. 
-   */
-  List<String> getObservedDates();
-  
-  /**
-   * Only for test. 
-   */
-  void stamp();
 
 }

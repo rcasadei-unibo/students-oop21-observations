@@ -1,57 +1,55 @@
 package org.observations.controllers;
 
 import javafx.scene.Node;
-import org.observations.gui.MainView;
+import org.observations.gui.MainWindowView;
 import org.observations.model.ModelAdapter;
 import org.observations.model.core.ModelAdapterImpl;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainController {
+public class MainWindowController {
     private final ModelAdapter adapter;
-    private final MainView view;
+    private final MainWindowView view;
     private final SubController<String, List<String>, String> studentsViewController;
     private final SubController<String, List<String>, String> momentsViewController;
     private final SubController<String, Map<String, Map<String, Integer>>, List<String>> observationsViewController;
-
     private String lastStudentSelected;
     private String lastMomentSelected;
 
-    public MainController() {
+    public MainWindowController() {
+
         List<String> momentsList;
         List<String> observationTypesList;
         try {
-            adapter = new ModelAdapterImpl();
+            this.adapter = new ModelAdapterImpl();
             momentsList = adapter.getMomentsListFromFile();
             observationTypesList = adapter.getTypesListFromFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        studentsViewController = new StudentsViewController(this);
+        this.studentsViewController = new StudentsViewController(this);
+        this.momentsViewController = new MomentsViewController(this, momentsList);
+        this.observationsViewController = new ObservatonsViewController(this, observationTypesList);
 
-        momentsViewController = new MomentsViewController(this, momentsList);
-        observationsViewController = new ObservatonsViewController(this, observationTypesList);
+        this.momentsViewController.setViewVisible(false);
+        this.observationsViewController.setViewVisible(false);
 
-        momentsViewController.setViewVisible(false);
-        observationsViewController.setViewVisible(false);
-
-        updateStudentsPanel();
-        view = new MainView(studentsViewController.getView(), momentsViewController.getView(), observationsViewController.getView());
+        this.updateStudentsPanel();
+        this.view = new MainWindowView(this.studentsViewController.getView(), this.momentsViewController.getView(), this.observationsViewController.getView());
     }
 
     public Node getView() {
         return view.getView();
     }
 
-    public void setViewVisible(Boolean value) {
-    }
-
     public void updateStudentsPanel() {
         try {
-            studentsViewController.updateView(adapter.getStudentsList());
+            this.studentsViewController.updateView(adapter.getStudentsList());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -60,7 +58,7 @@ public class MainController {
     public void updateMomentsPanel(String student) {
         this.lastStudentSelected = student;
         try {
-            momentsViewController.updateView((adapter.getMomentsList(student).get(student)));
+            this.momentsViewController.updateView((adapter.getMomentsList(student)));
             this.momentsViewController.setViewVisible(true);
             this.observationsViewController.setViewVisible(false);
         } catch (IOException e) {
@@ -78,7 +76,7 @@ public class MainController {
         }
     }
 
-    public void incrementObservationCount(String observationType){
+    public void incrementObservationCount(String observationType) {
         try {
             adapter.clickObservation(observationType);
             this.updateObservationsPanel(this.lastMomentSelected);
@@ -87,11 +85,11 @@ public class MainController {
         }
     }
 
-    public void decrementObservationCount(String observationType){
+    public void decrementObservationCount(String observationType) {
 
     }
 
-    public void insertNewStudent(String student){
+    public void insertNewStudent(String student) {
         try {
             adapter.createStudent(student);
             this.updateStudentsPanel();
@@ -100,7 +98,7 @@ public class MainController {
         }
     }
 
-    public void insertNewMoment(String moment){
+    public void insertNewMoment(String moment) {
         try {
             adapter.createMoment(moment);
             this.updateMomentsPanel(this.lastStudentSelected);
@@ -110,7 +108,7 @@ public class MainController {
         }
     }
 
-    public void insertNewObservation(String date, String observationType){
+    public void insertNewObservation(String date, String observationType) {
         try {
             adapter.createDate(date);
             adapter.clickObservation(observationType);
@@ -120,7 +118,7 @@ public class MainController {
         }
     }
 
-    public void insertNewObservationType(String observationType){
+    public void insertNewObservationType(String observationType) {
         try {
             adapter.createObservationsType(observationType);
         } catch (IOException e) {
@@ -128,4 +126,22 @@ public class MainController {
         }
     }
 
+    public Map<String, Map<String, Map<String, Map<String, Integer>>>> getAllData() {
+        Map<String, Map<String, Map<String, Map<String, Integer>>>> data = new HashMap<>();
+        try {
+            adapter.getStudentsList().forEach(student -> data.put(student, new HashMap<>()));
+            for (String student : data.keySet()) {
+                data.put(student, new HashMap<>());
+                List<String> moments = adapter.getMomentsList(student);
+                for (String moment : moments) {
+                    data.get(student).put(moment, new HashMap<>());
+                    Map<String, Map<String, Integer>> observations = adapter.getDatesAndObservations(moment);
+                    data.get(student).get(moment).putAll(observations);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return Collections.unmodifiableMap(data);
+    }
 }

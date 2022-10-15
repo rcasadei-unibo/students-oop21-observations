@@ -8,48 +8,50 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.observations.controllers.StudentsViewController;
-import org.observations.gui.popup.StudentInsertionPopup;
+import org.observations.controllers.MomentsViewController;
+import org.observations.gui.popup.MomentsInsertionPopup;
 
 import java.util.List;
 
-public class StudentsView implements View<List<String>> {
+public class MomentsView implements View<List<String>> {
 
-    private final StudentsViewController controller;
+    private final MomentsViewController controller;
     private final BorderPane view = new BorderPane();
     private final ScrollPane listPane = new ScrollPane();
     private final HBox bottomBox = new HBox();
-    private StudentInsertionPopup popup;
+    private MomentsInsertionPopup popup;
 
-    public StudentsView(StudentsViewController controller) {
+    public MomentsView(MomentsViewController controller) {
         this.controller = controller;
-        this.view.setMinWidth(150);
+        this.view.setMinWidth(100);
         this.createInsertButton();
+
         this.view.setCenter(listPane);
         this.view.setBottom(bottomBox);
     }
 
-    public void update(final List<String> input) {
+    public void update(List<String> input) {
         if (!input.isEmpty()) {
             VBox listBox = new VBox();
             listBox.setSpacing(8);
-            input.forEach(student -> {
-                Button button = new Button(student);
-                button.setOnAction(event -> this.onStudentButtonClick(button.getText()));
+            input.forEach(hour -> {
+                Button button = new Button(hour);
+                button.setOnAction(event -> this.onMomentButtonClick(button.getText()));
                 listBox.getChildren().add(button);
             });
             this.listPane.setContent(listBox);
+            this.view.setCenter(this.listPane);
         } else {
-            this.view.setCenter(new Label("No students found"));
+            this.view.setCenter(new Label("Nessun momento trovato"));
         }
     }
 
     public Node getView() {
-        return view;
+        return this.view;
     }
 
     public void setVisible(Boolean value) {
-        view.setVisible(value);
+        this.view.setVisible(value);
     }
 
     private void createInsertButton() {
@@ -61,14 +63,14 @@ public class StudentsView implements View<List<String>> {
 
     private void onInsertButtonClick() {
         if (this.popup == null) {
-            this.popup = new StudentInsertionPopup(this.controller);
+            this.popup = new MomentsInsertionPopup(this.controller);
         }
         if (!this.popup.isShowing()) {
             this.popup.show();
         }
     }
 
-    private void onStudentButtonClick(final String text) {
-        controller.getData(text);
+    private void onMomentButtonClick(final String text) {
+        this.controller.getData(text);
     }
 }

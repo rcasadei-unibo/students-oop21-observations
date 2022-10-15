@@ -8,20 +8,20 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.observations.controllers.StudentsViewController;
-import org.observations.gui.popup.StudentInsertionPopup;
+import org.observations.controllers.ObservatonsViewController;
+import org.observations.gui.popup.ObservationInsertionPopup;
 
-import java.util.List;
+import java.util.Map;
 
-public class StudentsView implements View<List<String>> {
+public class ObservationsView implements View<Map<String, Map<String, Integer>>> {
 
-    private final StudentsViewController controller;
+    private final ObservatonsViewController controller;
     private final BorderPane view = new BorderPane();
     private final ScrollPane listPane = new ScrollPane();
     private final HBox bottomBox = new HBox();
-    private StudentInsertionPopup popup;
+    private ObservationInsertionPopup popup;
 
-    public StudentsView(StudentsViewController controller) {
+    public ObservationsView(ObservatonsViewController controller) {
         this.controller = controller;
         this.view.setMinWidth(150);
         this.createInsertButton();
@@ -29,27 +29,29 @@ public class StudentsView implements View<List<String>> {
         this.view.setBottom(bottomBox);
     }
 
-    public void update(final List<String> input) {
-        if (!input.isEmpty()) {
+    public void update(Map<String, Map<String, Integer>> input) {
+        if(!input.isEmpty()) {
             VBox listBox = new VBox();
             listBox.setSpacing(8);
-            input.forEach(student -> {
-                Button button = new Button(student);
-                button.setOnAction(event -> this.onStudentButtonClick(button.getText()));
-                listBox.getChildren().add(button);
-            });
+            for (String date : input.keySet()) {
+                Map<String, Integer> activities = input.get(date);
+                for (String activity : activities.keySet()) {
+                    Integer observations = activities.get(activity);
+                    listBox.getChildren().add(new ObservationLine(this.controller, date, activity, observations).getView());
+                }
+            }
             this.listPane.setContent(listBox);
         } else {
-            this.view.setCenter(new Label("No students found"));
+            this.view.setCenter(new Label("Nessuna osservazione trovata"));
         }
     }
 
     public Node getView() {
-        return view;
+        return this.view;
     }
 
     public void setVisible(Boolean value) {
-        view.setVisible(value);
+        this.view.setVisible(value);
     }
 
     private void createInsertButton() {
@@ -60,15 +62,11 @@ public class StudentsView implements View<List<String>> {
     }
 
     private void onInsertButtonClick() {
-        if (this.popup == null) {
-            this.popup = new StudentInsertionPopup(this.controller);
+        if(this.popup == null){
+            this.popup = new ObservationInsertionPopup(this.controller);
         }
-        if (!this.popup.isShowing()) {
+        if(!this.popup.isShowing()){
             this.popup.show();
         }
-    }
-
-    private void onStudentButtonClick(final String text) {
-        controller.getData(text);
     }
 }

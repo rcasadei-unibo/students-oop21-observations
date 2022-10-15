@@ -49,10 +49,10 @@ public class ObservationLine extends HBox implements View<Integer> {
     public void setVisible(Boolean value) {}
 
     private void incrementObservation() {
-        controller.updateObservationsCount(this.hour.getText(), this.activity.getText(), true);
+        controller.updateObservationsCount(this.activity.getText(), true);
     }
 
     private void reduceObservations() {
-        controller.updateObservationsCount(this.hour.getText(), this.activity.getText(), false);
+        controller.updateObservationsCount(this.activity.getText(), false);
     }
 }

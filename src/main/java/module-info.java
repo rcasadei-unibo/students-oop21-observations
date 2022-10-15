@@ -1,12 +1,8 @@
 module org.observations {
+    requires javafx.graphics;
     requires javafx.controls;
-    requires javafx.fxml;
+    requires org.testng;
 
-
-    opens org.observations to javafx.fxml;
     exports org.observations;
-    exports org.observations.gui;
-    opens org.observations.gui to javafx.fxml;
-    exports org.observations.controllers;
-    opens org.observations.controllers to javafx.fxml;
+    opens org.observations to javafx.graphics;
 }
