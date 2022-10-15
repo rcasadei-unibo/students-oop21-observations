@@ -143,7 +143,7 @@ class TestJupiter {
         + mci.getCounterDates().size());
     System.out.println("counter observed moment " + mci.getCounterMoments() + " "
         + mci.getCounterMoments().size());
-    System.out.println("counter observed student " + mci.getCounterStudents() + " "
+    System.out.println("counter observed students " + mci.getCounterStudents() + " "
         + mci.getCounterStudents().size());
     System.out.println("counter observed moment " + mci.getCounterMoments() + " "
         + mci.getCounterMoments().size());
@@ -162,7 +162,10 @@ class TestJupiter {
     mci.chooseMoment(PROVA);
     assertEquals(2, mci.getCounterDates().size());
     mci.chooseMoment(COMPRAMI);
+    mci.stamp();
     assertEquals(0, mci.getCounterDates().size());
+    mci.chooseStudent(PLUTO);
+    mci.stamp();
   }
 
   /** test for test class model adapter. */
