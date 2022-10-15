@@ -130,5 +130,10 @@ public interface ModelCore {
    * Return list of all dates observed for the current student and moment. 
    */
   List<String> getObservedDates();
+  
+  /**
+   * Only for test. 
+   */
+  void stamp();
 
 }

@@ -84,4 +84,18 @@ public interface Updater {
   void updateObservations(String path, String element, Saved save, Loader loader)
       throws IOException;
 
+  /**
+   * Full Reset. 
+   */
+  void reset();
+  
+  /**
+   * Reset date and date root.
+   */
+  void resetDate();
+  
+  /**
+   * Only for test. 
+   */
+  void stamp();
 }
