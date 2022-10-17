@@ -20,7 +20,7 @@ public class MainWindowView {
         this.listsBox.getChildren().addAll(studentPanel, momentsPanel, observationsPanel);
         this.view.setCenter(listsBox);
         this.chartsWindowButton.setText("Mostra grafici");
-        chartsWindowButton.setOnAction(event -> this.onShowChartsButton());
+        this.chartsWindowButton.setOnAction(event -> this.onShowChartsButton());
 
         this.view.setBottom(chartsWindowButton);
     }

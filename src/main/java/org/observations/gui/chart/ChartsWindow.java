@@ -36,26 +36,33 @@ public class ChartsWindow extends Stage {
                 chartSelector));
         this.view.setBottom(refreshButton);
 
-        studentSelector.getItems().addAll(studentList);
-        momentSelector.getItems().add("Tutti");
+        this.studentSelector.getItems().addAll(studentList);
+        this.momentSelector.getItems().add("Tutti");
+        this.chartSelector.getItems().addAll("Torta", "Barre");
 
-        studentSelector.valueProperty().addListener((observable, oldValue, newValue) ->
-                this.controller.updateMomentSelector(studentSelector.getSelectionModel().getSelectedItem()));
+        this.studentSelector.valueProperty().addListener((observable, oldValue, newValue) ->{
+                this.controller.updateMomentSelector(this.studentSelector.getSelectionModel().getSelectedItem());
+                this.controller.updateChart();
+        });
 
-        this.refreshButton.setOnAction(event -> this.controller.setChartToPie());
+        this.momentSelector.valueProperty().addListener((observable, oldValue, newValue) -> this.controller.updateChart());
+
+        this.chartSelector.valueProperty().addListener((observable, oldValue, newValue) -> this.controller.updateChart());
+
+        this.refreshButton.setOnAction(event -> this.controller.updateChart());
         this.setScene(new Scene(view, 500, 400));
     }
 
     public ComboBox<String> getStudentSelector() {
-        return studentSelector;
+        return this.studentSelector;
     }
 
     public ComboBox<String> getMomentSelector() {
-        return momentSelector;
+        return this.momentSelector;
     }
 
     public ComboBox<String> getChartSelector() {
-        return chartSelector;
+        return this.chartSelector;
     }
 
     public void setStudentSelector(List<String> studentList) {

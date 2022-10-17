@@ -13,27 +13,14 @@ public class ChartsWindowController {
 
     private final MainWindowController controller;
     private final ChartsWindow chartsWindow;
+    private Map<String, Map<String, Map<String, Map<String, Integer>>>> data;
 
 
     public ChartsWindowController(MainWindowController controller) {
         this.controller = controller;
         this.chartsWindow = new ChartsWindow(this, controller.getStudentsList());
-        this.setChart(null);
-    }
-
-    private void setChart(Object o) {
-
-
-    }
-
-    public void updateChartsWindow() {
-        this.chartsWindow.setStudentSelector(this.controller.getStudentsList());
-        this.chartsWindow.setMomentSelector(List.of());
-        this.setChart(null);
-    }
-
-    public void setChartToPie() {
-        this.chartsWindow.setChart(ChartFactory.createPieChart(this.getPieData()));
+        this.data = this.controller.getAllData();
+        this.updateChartsWindow();
     }
 
     public void showWindow() {
@@ -48,14 +35,50 @@ public class ChartsWindowController {
         return chartsWindow.isShowing();
     }
 
+    public void updateChartsWindow() {
+        this.chartsWindow.setStudentSelector(this.controller.getStudentsList());
+        this.chartsWindow.setMomentSelector(List.of());
+        this.setChart();
+    }
 
-    public ObservableList<PieChart.Data> getPieData() {
+    public void updateChart() {
+        this.setChart();
+    }
+
+    private void setChart() {
+        if(!this.chartsWindow.getChartSelector().getSelectionModel().isEmpty()){
+            switch (this.chartsWindow.getChartSelector().getSelectionModel().getSelectedItem()){
+                case "Torta": this.setChartToPie(); break;
+                case "Barre": this.setChartToBar(); break;
+            }
+        } else {
+            this.setChartToPie();
+        }
+    }
+
+    private void setChartToPie() {
+        this.chartsWindow.setChart(ChartFactory.createPieChart(this.getPieData(this.data)));
+    }
+
+    private void setChartToBar(){
+
+    }
+
+    public void updateMomentSelector(String student) {
+        this.chartsWindow.setMomentSelector(this.controller.getMomentList(student));
+    }
+
+    public Window getMainWindow() {
+        return this.controller.getView().getScene().getWindow();
+    }
+
+    private ObservableList<PieChart.Data> getPieData(Map<String, Map<String, Map<String, Map<String, Integer>>>> data) {
         Optional<String> selectedStudent = this.chartsWindow.getSelectedStudent();
         Optional<String> selectedMoment = this.chartsWindow.getSelectedMoment();
         ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
 
         if (selectedStudent.isPresent() && selectedMoment.isPresent()) {
-            Map<String, Integer> filteredData = this.filterData(this.controller.getAllData(), selectedStudent.get(), selectedMoment.get());
+            Map<String, Integer> filteredData = this.filterData(data, selectedStudent.get(), selectedMoment.get());
             for (String key : filteredData.keySet()) {
                 pieData.add(new PieChart.Data(key, filteredData.get(key)));
             }
@@ -99,17 +122,5 @@ public class ChartsWindowController {
             }
         }
         return observations;
-    }
-
-    public void updateChart() {
-        this.getPieData();
-    }
-
-    public void updateMomentSelector(String student) {
-        this.chartsWindow.setMomentSelector(this.controller.getMomentList(student));
-    }
-
-    public Window getMainWindow() {
-        return this.controller.getView().getScene().getWindow();
     }
 }
