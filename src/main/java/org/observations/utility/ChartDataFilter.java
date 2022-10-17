@@ -42,8 +42,6 @@ public class ChartDataFilter {
                 pieData.add(new PieChart.Data(key, filteredData.get(key)));
             }
         }
-
-        System.out.println(pieData);
         return pieData;
     }
 
@@ -77,8 +75,6 @@ public class ChartDataFilter {
                 barData.getData().add(new XYChart.Data<>(key, filteredData.get(key)));
             }
         }
-
-        System.out.println(barData);
         return barData;
     }
 

@@ -6,8 +6,10 @@ import org.observations.chartFactory.ChartFactory;
 import org.observations.gui.chart.ChartsWindow;
 import org.observations.utility.ChartDataFilter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Controller which will create and control a customized window.
@@ -70,7 +72,7 @@ public class ChartsWindowController {
      */
     private void setNewChart() {
 
-        //if user hasn't selected a chart type yet then create default type chart.
+        //if user hasn't selected a specific chart type yet then create a pie type chart.
         if (this.chartsWindow.getSelectedChart().isPresent()) {
             switch (this.chartsWindow.getSelectedChart().get()) {
                 case "Torta":
@@ -116,8 +118,12 @@ public class ChartsWindowController {
      *
      * @param student Student to search moments of.
      */
-    public void updateMomentSelector(String student) {
-        this.chartsWindow.setMomentSelector(this.controller.getMomentList(student));
+    public void updateMomentSelector(Optional<String> student) {
+        student.ifPresent(s -> {
+            if(this.data.containsKey(s)){
+                this.chartsWindow.setMomentSelector(new ArrayList<>(this.data.get(s).keySet()));
+            }
+        });
     }
 
     /**

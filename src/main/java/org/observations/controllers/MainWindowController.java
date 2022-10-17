@@ -23,8 +23,8 @@ public class MainWindowController {
     private final SubController<String, Map<String, Map<String, Integer>>, List<String>> observationsViewController;
 
     private ChartsWindowController chartsWindowController;
-    private String lastStudentSelected;
-    private String lastMomentSelected;
+    private String lastStudentSelected = "";
+    private String lastMomentSelected = "";
 
     public MainWindowController() {
 
@@ -52,8 +52,8 @@ public class MainWindowController {
     /**
      * Initialize the charts window.
      */
-    public void initializeChartsWindowController(){
-        if(chartsWindowController == null){
+    public void initializeChartsWindowController() {
+        if (chartsWindowController == null) {
             this.chartsWindowController = new ChartsWindowController(this, this.view.getView());
         }
     }
@@ -87,6 +87,9 @@ public class MainWindowController {
      * @return a list of all the moments of a student.
      */
     public List<String> getMomentList(String student) {
+        if (student.isEmpty()) {
+            return List.of();
+        }
         try {
             return this.adapter.getMomentsList(student);
         } catch (IOException e) {
@@ -101,6 +104,9 @@ public class MainWindowController {
      * @return a map of every date and all observations of that given date.
      */
     public Map<String, Map<String, Integer>> getDateAndObservationsList(String moment) {
+        if (moment.isEmpty()) {
+            return Map.of();
+        }
         try {
             return this.adapter.getDatesAndObservations(moment);
         } catch (IOException e) {
@@ -150,9 +156,7 @@ public class MainWindowController {
         try {
             adapter.clickObservation(observationType);
             this.updateObservationsPanel(this.lastMomentSelected);
-            if (this.chartsWindowController.isShowing()) {
-                this.chartsWindowController.updateChartsWindow();
-            }
+            this.chartsWindowController.updateChartsWindow();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -176,9 +180,7 @@ public class MainWindowController {
         try {
             adapter.createStudent(student);
             this.updateStudentsPanel();
-            if (this.chartsWindowController.isShowing()) {
-                this.chartsWindowController.updateChartsWindow();
-            }
+            this.chartsWindowController.updateChartsWindow();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -194,9 +196,7 @@ public class MainWindowController {
             adapter.createMoment(moment);
             this.updateMomentsPanel(this.lastStudentSelected);
             this.observationsViewController.setViewVisible(false);
-            if (this.chartsWindowController.isShowing()) {
-                this.chartsWindowController.updateChartsWindow();
-            }
+            this.chartsWindowController.updateChartsWindow();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -205,7 +205,7 @@ public class MainWindowController {
     /**
      * Insert a new observation.
      *
-     * @param date dd-mm-yyyy format.
+     * @param date            dd-mm-yyyy format.
      * @param observationType name of observation.
      */
     public void insertNewObservation(String date, String observationType) {
@@ -213,9 +213,7 @@ public class MainWindowController {
             adapter.createDate(date);
             adapter.clickObservation(observationType);
             this.updateObservationsPanel(this.lastMomentSelected);
-            if (this.chartsWindowController.isShowing()) {
-                this.chartsWindowController.updateChartsWindow();
-            }
+            this.chartsWindowController.updateChartsWindow();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -263,6 +261,12 @@ public class MainWindowController {
                     data.get(student).get(moment).putAll(observations);
                 }
             }
+
+            //Necessary to not brick model.saved class
+            this.getMomentList(this.lastStudentSelected);
+            this.getDateAndObservationsList(this.lastMomentSelected);
+            //
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

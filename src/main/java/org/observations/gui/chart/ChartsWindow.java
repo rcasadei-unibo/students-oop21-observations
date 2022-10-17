@@ -46,7 +46,7 @@ public class ChartsWindow extends Stage {
         this.momentSelector.getItems().add("Tutti");
 
         this.studentSelector.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.controller.updateMomentSelector(this.studentSelector.getSelectionModel().getSelectedItem());
+            this.controller.updateMomentSelector(Optional.ofNullable(this.studentSelector.getSelectionModel().getSelectedItem()));
             this.controller.updateChart();
         });
 
