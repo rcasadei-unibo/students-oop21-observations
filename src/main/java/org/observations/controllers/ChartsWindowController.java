@@ -1,13 +1,12 @@
 package org.observations.controllers;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.chart.PieChart;
 import javafx.stage.Window;
-import org.observations.gui.chart.ChartFactory;
+import org.observations.chartFactory.ChartFactory;
 import org.observations.gui.chart.ChartsWindow;
+import org.observations.utility.ChartDataFilter;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class ChartsWindowController {
 
@@ -38,18 +37,22 @@ public class ChartsWindowController {
     public void updateChartsWindow() {
         this.chartsWindow.setStudentSelector(this.controller.getStudentsList());
         this.chartsWindow.setMomentSelector(List.of());
-        this.setChart();
+        this.setNewChart();
     }
 
     public void updateChart() {
-        this.setChart();
+        this.setNewChart();
     }
 
-    private void setChart() {
-        if(!this.chartsWindow.getChartSelector().getSelectionModel().isEmpty()){
-            switch (this.chartsWindow.getChartSelector().getSelectionModel().getSelectedItem()){
-                case "Torta": this.setChartToPie(); break;
-                case "Barre": this.setChartToBar(); break;
+    private void setNewChart() {
+        if (!this.chartsWindow.getChartSelector().getSelectionModel().isEmpty()) {
+            switch (this.chartsWindow.getChartSelector().getSelectionModel().getSelectedItem()) {
+                case "Torta":
+                    this.setChartToPie();
+                    break;
+                case "Barre":
+                    this.setChartToBar();
+                    break;
             }
         } else {
             this.setChartToPie();
@@ -57,11 +60,23 @@ public class ChartsWindowController {
     }
 
     private void setChartToPie() {
-        this.chartsWindow.setChart(ChartFactory.createPieChart(this.getPieData(this.data)));
+        this.chartsWindow.setChart(
+                ChartFactory.createPieChart(
+                        ChartDataFilter.getPieData(
+                                this.data,
+                                this.chartsWindow.getSelectedStudent(),
+                                this.chartsWindow.getSelectedMoment()
+                        )));
     }
 
-    private void setChartToBar(){
-
+    private void setChartToBar() {
+        this.chartsWindow.setChart(
+                ChartFactory.createBarChart(
+                        ChartDataFilter.getBarData(
+                                this.data,
+                                this.chartsWindow.getSelectedStudent(),
+                                this.chartsWindow.getSelectedMoment()
+                        )));
     }
 
     public void updateMomentSelector(String student) {
@@ -70,57 +85,5 @@ public class ChartsWindowController {
 
     public Window getMainWindow() {
         return this.controller.getView().getScene().getWindow();
-    }
-
-    private ObservableList<PieChart.Data> getPieData(Map<String, Map<String, Map<String, Map<String, Integer>>>> data) {
-        Optional<String> selectedStudent = this.chartsWindow.getSelectedStudent();
-        Optional<String> selectedMoment = this.chartsWindow.getSelectedMoment();
-        ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
-
-        if (selectedStudent.isPresent() && selectedMoment.isPresent()) {
-            Map<String, Integer> filteredData = this.filterData(data, selectedStudent.get(), selectedMoment.get());
-            for (String key : filteredData.keySet()) {
-                pieData.add(new PieChart.Data(key, filteredData.get(key)));
-            }
-        }
-        System.out.println(pieData);
-        return pieData;
-    }
-
-    private Map<String, Integer> filterData(
-            Map<String, Map<String, Map<String, Map<String, Integer>>>> data,
-            String studentFilter,
-            String momentFilter) {
-
-        Map<String, Integer> observations = new HashMap<>();
-        System.out.println(studentFilter);
-        System.out.println(momentFilter);
-
-        if (Objects.equals(momentFilter, "Tutti")) {
-            for (String moment : data.get(studentFilter).keySet()) {
-                for (String date : data.get(studentFilter).get(moment).keySet()) {
-                    Map<String, Integer> map = data.get(studentFilter).get(moment).get(date);
-                    for (String observation : map.keySet()) {
-                        if(observations.containsKey(observation)){
-                            observations.put(observation, map.get(observation) + observations.get(observation));
-                        } else {
-                            observations.put(observation, map.get(observation));
-                        }
-                    }
-                }
-            }
-        } else {
-            for (String date : data.get(studentFilter).get(momentFilter).keySet()) {
-                Map<String, Integer> map = data.get(studentFilter).get(momentFilter).get(date);
-                for (String observation : map.keySet()) {
-                    if(observations.containsKey(observation)){
-                        observations.put(observation, map.get(observation) + observations.get(observation));
-                    } else {
-                        observations.put(observation, map.get(observation));
-                    }
-                }
-            }
-        }
-        return observations;
     }
 }

@@ -1,4 +1,4 @@
-package org.observations.gui.chart;
+package org.observations.chartFactory;
 
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
@@ -14,10 +14,13 @@ public abstract class ChartFactory {
         return new PieChart(pcd);
     }
 
-    public static BarChart<String, Integer> createBarChart(XYChart.Series<String, Integer> series) {
-        //return new BarChart<String, Integer>();
-        return null;
+    public static BarChart<String, Number> createBarChart(XYChart.Series<String, Number> series) {
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Osservazioni");
+        yAxis.setLabel("Numero di volte osservato");
+        BarChart<String, Number> chart = new BarChart<>(xAxis, yAxis);
+        chart.getData().add(series);
+        return chart;
     }
-
-
 }

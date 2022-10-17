@@ -5,4 +5,6 @@ module org.observations {
 
     exports org.observations;
     opens org.observations to javafx.graphics;
+    exports org.observations.utility;
+    opens org.observations.utility to javafx.graphics;
 }

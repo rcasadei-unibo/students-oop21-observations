@@ -67,18 +67,17 @@ public class ChartsWindow extends Stage {
 
     public void setStudentSelector(List<String> studentList) {
         this.studentSelector.getItems().clear();
-        this.studentSelector.getItems().addAll("Tutti");
         this.studentSelector.getItems().addAll(studentList);
-    }
-
-    public Optional<String> getSelectedStudent() {
-        return Optional.ofNullable(this.studentSelector.getSelectionModel().getSelectedItem());
     }
 
     public void setMomentSelector(List<String> momentList) {
         this.momentSelector.getItems().clear();
         this.momentSelector.getItems().addAll("Tutti");
         this.momentSelector.getItems().addAll(momentList);
+    }
+
+    public Optional<String> getSelectedStudent() {
+        return Optional.ofNullable(this.studentSelector.getSelectionModel().getSelectedItem());
     }
 
     public Optional<String> getSelectedMoment() {

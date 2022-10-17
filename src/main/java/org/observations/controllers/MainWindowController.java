@@ -79,50 +79,24 @@ public class MainWindowController {
 
     void updateMomentsPanel(String student) {
         this.lastStudentSelected = student;
-        momentsViewController.updateView(this.getMomentList(student));
+        this.momentsViewController.updateView(this.getMomentList(student));
         this.momentsViewController.setViewVisible(true);
         this.observationsViewController.setViewVisible(false);
     }
 
     void updateObservationsPanel(String moment) {
         this.lastMomentSelected = moment;
-        observationsViewController.updateView(this.getDateAndObservationsList(moment));
+        this.observationsViewController.updateView(this.getDateAndObservationsList(moment));
         this.observationsViewController.setViewVisible(true);
     }
-
-    /*private void updateStudentsPanel() {
-        try {
-            studentsViewController.updateView(adapter.getStudentsList());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void updateMomentsPanel(String student) {
-        this.lastStudentSelected = student;
-        try {
-            momentsViewController.updateView((adapter.getMomentsList(student)));
-            this.momentsViewController.setViewVisible(true);
-            this.observationsViewController.setViewVisible(false);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void updateObservationsPanel(String moment) {
-        this.lastMomentSelected = moment;
-        try {
-            observationsViewController.updateView(adapter.getDatesAndObservations(moment));
-            this.observationsViewController.setViewVisible(true);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }*/
 
     void incrementObservationCount(String observationType) {
         try {
             adapter.clickObservation(observationType);
             this.updateObservationsPanel(this.lastMomentSelected);
+            if (this.chartsWindowController.isShowing()) {
+                this.chartsWindowController.updateChartsWindow();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -136,6 +110,9 @@ public class MainWindowController {
         try {
             adapter.createStudent(student);
             this.updateStudentsPanel();
+            if (this.chartsWindowController.isShowing()) {
+                this.chartsWindowController.updateChartsWindow();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -146,6 +123,9 @@ public class MainWindowController {
             adapter.createMoment(moment);
             this.updateMomentsPanel(this.lastStudentSelected);
             this.observationsViewController.setViewVisible(false);
+            if (this.chartsWindowController.isShowing()) {
+                this.chartsWindowController.updateChartsWindow();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -156,6 +136,9 @@ public class MainWindowController {
             adapter.createDate(date);
             adapter.clickObservation(observationType);
             this.updateObservationsPanel(this.lastMomentSelected);
+            if (this.chartsWindowController.isShowing()) {
+                this.chartsWindowController.updateChartsWindow();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -170,7 +153,7 @@ public class MainWindowController {
     }
 
     public void showChartsWindow() {
-        if(this.chartsWindowController == null){
+        if (this.chartsWindowController == null) {
             this.chartsWindowController = new ChartsWindowController(this);
         }
         if (!chartsWindowController.isShowing()) {
