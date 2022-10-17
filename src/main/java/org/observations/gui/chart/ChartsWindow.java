@@ -55,7 +55,7 @@ public class ChartsWindow extends Stage {
         this.chartSelector.valueProperty().addListener((observable, oldValue, newValue) -> this.controller.updateChart());
 
         this.refreshButton.setOnAction(event -> this.controller.updateChart());
-        this.setScene(new Scene(view, 500, 400));
+        this.setScene(new Scene(this.view, 500, 400));
     }
 
     /**

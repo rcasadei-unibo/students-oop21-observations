@@ -5,26 +5,26 @@ import javafx.scene.Node;
 /**
  * Simple view
  *
- * @param <I> Parameter required to be imputed to update the view
+ * @param <I> Parameter required to update the view
  */
 public interface View<I> {
 
     /**
-     * Update the view with the new input
+     * Update the view with the new input.
      *
-     * @param input
+     * @param input value tho be inputted.
      */
     void update(I input);
 
     /**
-     * Returns the view root node
+     * Returns the view root node.
      *
-     * @return Node root
+     * @return node of root.
      */
     Node getView();
 
     /**
-     * Show/hide the view
+     * Show/hide the view.
      *
      * @param value
      */

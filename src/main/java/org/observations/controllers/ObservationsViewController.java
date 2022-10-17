@@ -7,14 +7,14 @@ import org.observations.gui.View;
 import java.util.List;
 import java.util.Map;
 
-public class ObservatonsViewController implements SubController<String, Map<String, Map<String, Integer>>, List<String>> {
+public class ObservationsViewController implements SubController<String, Map<String, Map<String, Integer>>, List<String>> {
 
     private final MainWindowController parentController;
     private final View<Map<String, Map<String, Integer>>> view;
     private final List<String> observationTypes;
 
 
-    public ObservatonsViewController(MainWindowController mainWindowController, List<String> observationTypesList) {
+    public ObservationsViewController(MainWindowController mainWindowController, List<String> observationTypesList) {
         this.parentController = mainWindowController;
         this.observationTypes = observationTypesList;
         this.view = new ObservationsView(this);

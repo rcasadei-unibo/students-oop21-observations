@@ -1,5 +1,6 @@
 package org.observations.controllers;
 
+import javafx.scene.Node;
 import javafx.stage.Window;
 import org.observations.chartFactory.ChartFactory;
 import org.observations.gui.chart.ChartsWindow;
@@ -18,7 +19,7 @@ public class ChartsWindowController {
     private Map<String, Map<String, Map<String, Map<String, Integer>>>> data;
 
 
-    public ChartsWindowController(MainWindowController controller) {
+    public ChartsWindowController(MainWindowController controller, Node view) {
         this.controller = controller;
         this.chartsWindow = new ChartsWindow(this, controller.getStudentsList());
         this.data = this.controller.getAllData();

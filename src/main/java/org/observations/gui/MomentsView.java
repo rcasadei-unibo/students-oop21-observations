@@ -25,7 +25,7 @@ public class MomentsView implements View<List<String>> {
         this.controller = controller;
         this.view.setMinWidth(100);
         this.createInsertButton();
-
+        this.view.setTop(new Label("Momenti"));
         this.view.setCenter(listPane);
         this.view.setBottom(bottomBox);
     }

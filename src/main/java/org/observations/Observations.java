@@ -13,6 +13,7 @@ public class Observations extends Application {
         stage.setTitle("Observations");
         MainWindowController mainWindowController = new MainWindowController();
         Scene scene = new Scene((Parent) mainWindowController.getView(), 800, 600);
+        mainWindowController.initializeChartsWindowController();
         stage.setScene(scene);
         stage.show();
     }

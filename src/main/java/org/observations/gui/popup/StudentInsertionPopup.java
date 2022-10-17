@@ -11,6 +11,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.observations.controllers.StudentsViewController;
 
+/**
+ * Custom popup which create a window for the user to input a new student to the model to save.
+ */
 public class StudentInsertionPopup extends Stage {
 
     private final StudentsViewController controller;
