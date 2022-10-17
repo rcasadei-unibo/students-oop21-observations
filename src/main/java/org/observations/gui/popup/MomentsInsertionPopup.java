@@ -11,6 +11,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.observations.controllers.MomentsViewController;
 
+/**
+ * Custom popup which create a window for the user to input a new moment to the model to save.
+ */
 public class MomentsInsertionPopup extends Stage {
 
     private final MomentsViewController controller;

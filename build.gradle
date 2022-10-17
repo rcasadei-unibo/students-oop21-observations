@@ -36,6 +36,7 @@ javafx {
 dependencies {
     implementation 'org.testng:testng:7.6.1'
     implementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+    implementation 'com.itextpdf:itext7-core:7.2.3'
 }
 
 test {

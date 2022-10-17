@@ -9,15 +9,18 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.observations.controllers.ObservatonsViewController;
+import org.observations.controllers.ObservationsViewController;
 
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Custom popup which create a window for the user to input a new observation to the model to save.
+ */
 public class ObservationInsertionPopup extends Stage {
-    private final ObservatonsViewController controller;
+    private final ObservationsViewController controller;
 
-    public ObservationInsertionPopup(ObservatonsViewController controller) {
+    public ObservationInsertionPopup(ObservationsViewController controller) {
         this.controller = controller;
         this.initOwner(controller.getView().getScene().getWindow());
         this.setWidth(250);

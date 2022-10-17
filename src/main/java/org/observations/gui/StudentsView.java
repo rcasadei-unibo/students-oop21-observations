@@ -25,6 +25,7 @@ public class StudentsView implements View<List<String>> {
         this.controller = controller;
         this.view.setMinWidth(150);
         this.createInsertButton();
+        this.view.setTop(new Label("Studenti"));
         this.view.setCenter(listPane);
         this.view.setBottom(bottomBox);
     }

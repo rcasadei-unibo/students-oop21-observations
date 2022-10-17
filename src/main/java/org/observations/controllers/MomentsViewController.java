@@ -10,7 +10,7 @@ public class MomentsViewController implements SubController<String, List<String>
 
     private final MainWindowController parentController;
     private final View<List<String>> view;
-    private List<String> momentList;
+    private final List<String> momentList;
 
     public MomentsViewController(MainWindowController mainWindowController, List<String> momentsList) {
         parentController = mainWindowController;
@@ -41,9 +41,5 @@ public class MomentsViewController implements SubController<String, List<String>
 
     public List<String> getMomentList() {
         return momentList;
-    }
-
-    public void setMomentList(List<String> momentList) {
-        this.momentList = momentList;
     }
 }

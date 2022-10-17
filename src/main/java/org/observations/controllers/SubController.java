@@ -3,7 +3,7 @@ package org.observations.controllers;
 import javafx.scene.Node;
 
 /**
- * SubControlled which create and control a View for a third party
+ * SubControlled which create and control a View
  *
  * @param <M> Model data type required bi controller
  * @param <I> Type of input required by View
@@ -12,37 +12,37 @@ import javafx.scene.Node;
 public interface SubController<M, I, O> {
 
     /**
-     * Updates the view with new data
+     * Updates the view with new data.
      *
-     * @param input
+     * @param input value to be inputted.
      */
     void updateView(I input);
 
     /**
-     * Returns the controlled view root's node
+     * Returns the controlled view root's node.
      *
-     * @return Node
+     * @return node of view.
      */
     Node getView();
 
     /**
-     * Set the view controlled on/off
+     * Set the view controlled on/off.
      *
      * @param value
      */
     void setViewVisible(Boolean value);
 
     /**
-     * Ask data from the model
+     * Ask data from the model.
      *
-     * @param text Entry to be satisfied
+     * @param text Entry to be satisfied.
      */
     void getData(M text);
 
     /**
-     * Handles new data to the model
+     * Handles new data to the model.
      *
-     * @param output
+     * @param output value to be outputted.
      */
     void updateModel(O output);
 }

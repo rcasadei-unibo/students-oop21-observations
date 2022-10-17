@@ -8,24 +8,27 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.observations.controllers.ObservatonsViewController;
+import org.observations.controllers.ObservationsViewController;
 import org.observations.gui.popup.ObservationInsertionPopup;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class ObservationsView implements View<Map<String, Map<String, Integer>>> {
 
-    private final ObservatonsViewController controller;
+    private final ObservationsViewController controller;
     private final BorderPane view = new BorderPane();
     private final ScrollPane listPane = new ScrollPane();
     private final HBox bottomBox = new HBox();
     private ObservationInsertionPopup popup;
 
-    public ObservationsView(ObservatonsViewController controller) {
+    public ObservationsView(ObservationsViewController controller) {
         this.controller = controller;
         this.view.setMinWidth(150);
         this.createInsertButton();
-        this.view.setCenter(listPane);
+        this.view.setTop(new Label("Osservazioni"));
         this.view.setBottom(bottomBox);
     }
 
@@ -33,7 +36,10 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
         if(!input.isEmpty()) {
             VBox listBox = new VBox();
             listBox.setSpacing(8);
-            for (String date : input.keySet()) {
+            List<String> reversedList = new ArrayList<>(input.keySet());
+            //Reverse list order so we have recent dates as first
+            Collections.reverse(reversedList);
+            for (String date : reversedList) {
                 Map<String, Integer> activities = input.get(date);
                 for (String activity : activities.keySet()) {
                     Integer observations = activities.get(activity);
@@ -41,6 +47,7 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
                 }
             }
             this.listPane.setContent(listBox);
+            this.view.setCenter(listPane);
         } else {
             this.view.setCenter(new Label("Nessuna osservazione trovata"));
         }

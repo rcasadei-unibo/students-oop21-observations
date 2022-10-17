@@ -4,17 +4,17 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import org.observations.controllers.ObservatonsViewController;
+import org.observations.controllers.ObservationsViewController;
 
 public class ObservationLine extends HBox implements View<Integer> {
 
     final Integer SPACING = 5;
-    private final ObservatonsViewController controller;
+    private final ObservationsViewController controller;
     private final Label hour;
     private final Label activity;
     private final Label observations;
 
-    public ObservationLine(ObservatonsViewController controller, String hour, String activity, Integer observations) {
+    public ObservationLine(ObservationsViewController controller, String hour, String activity, Integer observations) {
         this.controller = controller;
         this.hour = new Label(hour);
         this.activity = new Label(activity);
