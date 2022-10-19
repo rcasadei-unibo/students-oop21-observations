@@ -148,12 +148,14 @@ public class MainWindowController {
     }
 
     /**
-     * Increment the count of a given observation.
+     * Create observation if missing or increment the count of a given observation.
      *
+     * @param date            dd-mm-yyyy format.
      * @param observationType name of observation.
      */
-    void incrementObservationCount(String observationType) {
+    void incrementObservationCount(String date, String observationType) {
         try {
+            adapter.createDate(date);
             adapter.clickObservation(observationType);
             this.updateObservationsPanel(this.lastMomentSelected);
             this.chartsWindowController.updateChartsWindow();
@@ -166,8 +168,9 @@ public class MainWindowController {
      * Decrement the count of a given observation.
      *
      * @param observationType name of observation.
+     * @param activity
      */
-    void decrementObservationCount(String observationType) {
+    void decrementObservationCount(String observationType, String activity) {
 
     }
 
@@ -196,23 +199,6 @@ public class MainWindowController {
             adapter.createMoment(moment);
             this.updateMomentsPanel(this.lastStudentSelected);
             this.observationsViewController.setViewVisible(false);
-            this.chartsWindowController.updateChartsWindow();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Insert a new observation.
-     *
-     * @param date            dd-mm-yyyy format.
-     * @param observationType name of observation.
-     */
-    public void insertNewObservation(String date, String observationType) {
-        try {
-            adapter.createDate(date);
-            adapter.clickObservation(observationType);
-            this.updateObservationsPanel(this.lastMomentSelected);
             this.chartsWindowController.updateChartsWindow();
         } catch (IOException e) {
             throw new RuntimeException(e);

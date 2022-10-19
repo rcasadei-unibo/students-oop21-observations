@@ -26,11 +26,10 @@ public class StudentsView implements View<List<String>> {
         this.view.setMinWidth(150);
         this.createInsertButton();
         this.view.setTop(new Label("Studenti"));
-        this.view.setCenter(listPane);
         this.view.setBottom(bottomBox);
     }
 
-    public void update(final List<String> input) {
+    public void update(List<String> input) {
         if (!input.isEmpty()) {
             VBox listBox = new VBox();
             listBox.setSpacing(8);
@@ -40,8 +39,9 @@ public class StudentsView implements View<List<String>> {
                 listBox.getChildren().add(button);
             });
             this.listPane.setContent(listBox);
+            this.view.setCenter(listPane);
         } else {
-            this.view.setCenter(new Label("No students found"));
+            this.view.setCenter(new Label("Nessuno studente trovato"));
         }
     }
 

@@ -9,7 +9,8 @@ import org.observations.controllers.MainWindowController;
 
 public class MainWindowView {
 
-    private static final Double SPACING = 8.0;
+    private static final Double LIST_BOX_SPACING = 8.0;
+    private static final Double TOP_BOX_SPACING = 30.0;
     private static final String SELECTED_STUDENT_LABEL = "Studente selezionato: ";
     private static final String SELECTED_MOMENT_LABEL = "Momento selezionato: ";
     private final MainWindowController controller;
@@ -21,9 +22,9 @@ public class MainWindowView {
         this.controller = controller;
 
         HBox listsBox = new HBox(studentPanel, momentsPanel, observationsPanel);
-        listsBox.setSpacing(SPACING);
         HBox topBox = new HBox(selectedStudent, selectedMoment);
-        topBox.setSpacing(SPACING);
+        listsBox.setSpacing(LIST_BOX_SPACING);
+        topBox.setSpacing(TOP_BOX_SPACING);
 
         this.view.setTop(topBox);
         this.view.setCenter(listsBox);

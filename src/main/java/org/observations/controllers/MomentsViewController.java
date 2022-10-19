@@ -19,7 +19,7 @@ public class MomentsViewController implements SubController<String, List<String>
     }
 
     public void updateView(List<String> input) {
-        System.out.println("Momenti: " + input);
+        System.out.println("\nMomenti: " + input);
         view.update(input);
     }
 

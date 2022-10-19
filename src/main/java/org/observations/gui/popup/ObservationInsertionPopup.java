@@ -2,16 +2,14 @@ package org.observations.gui.popup;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.observations.controllers.ObservationsViewController;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -30,11 +28,17 @@ public class ObservationInsertionPopup extends Stage {
         Button confirmButton = new Button("Inserisci osservazione");
         Button cancelButton = new Button("Cancella azione");
         ComboBox<String> comboBox = new ComboBox<>();
+        DatePicker picker = new DatePicker(LocalDate.now());
         comboBox.getItems().addAll(this.controller.getObservationsTypesNames());
 
         confirmButton.setOnAction(event -> {
             if(!comboBox.getSelectionModel().getSelectedItem().isEmpty()) {
-                controller.updateModel(List.of(LocalDate.now().toString(), comboBox.getSelectionModel().getSelectedItem()));
+
+                controller.updateModel(
+                        List.of(
+                                picker.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                                comboBox.getSelectionModel().getSelectedItem()));
+
                 comboBox.getSelectionModel().clearSelection();
                 this.close();
             } else {
@@ -46,8 +50,11 @@ public class ObservationInsertionPopup extends Stage {
         cancelButton.setOnAction(event -> this.close());
 
         VBox box = new VBox();
+        box.setSpacing(6);
         box.setAlignment(Pos.CENTER);
-        box.getChildren().addAll(popupMessage, comboBox, new HBox(confirmButton, cancelButton));
+        HBox hbox = new HBox(confirmButton, cancelButton);
+        hbox.setSpacing(8);
+        box.getChildren().addAll(popupMessage, comboBox, picker, hbox);
 
         Scene scene = new Scene(box);
         this.setScene(scene);

@@ -21,7 +21,7 @@ public class ObservationsViewController implements SubController<String, Map<Str
     }
 
     public void updateView(Map<String, Map<String, Integer>> input) {
-        System.out.println("Osservazioni: " + input);
+        System.out.println("\nOsservazioni: " + input);
         view.update(input);
     }
 
@@ -37,14 +37,14 @@ public class ObservationsViewController implements SubController<String, Map<Str
     }
 
     public void updateModel(List<String> input) {
-        this.parentController.insertNewObservation(input.get(0), input.get(1));
+        this.parentController.incrementObservationCount(input.get(0), input.get(1));
     }
 
-    public void updateObservationsCount(String activity, Boolean isIncrement) {
+    public void updateObservationsCount(String date, String activity, Boolean isIncrement) {
         if(isIncrement){
-            this.parentController.incrementObservationCount(activity);
+            this.parentController.incrementObservationCount(date, activity);
         } else {
-            this.parentController.decrementObservationCount(activity);
+            this.parentController.decrementObservationCount(date, activity);
         }
     }
 

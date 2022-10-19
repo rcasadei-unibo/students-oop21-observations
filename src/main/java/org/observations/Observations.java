@@ -19,6 +19,8 @@ public class Observations extends Application {
     }
 
     public static void main(String[] args) {
+        //PdfExporter.exportPdf();
+        //System.exit(0);
         launch();
     }
 }
