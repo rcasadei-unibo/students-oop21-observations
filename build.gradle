@@ -5,6 +5,7 @@ plugins {
     id 'org.beryx.jlink' version '2.25.0'
 }
 
+mainClassName = "org.observations.Observations"
 group 'org'
 version '1.0-SNAPSHOT'
 
@@ -30,13 +31,13 @@ application {
 
 javafx {
     version = '17.0.2'
-    modules = ['javafx.controls', 'javafx.fxml']
+    modules = ['javafx.controls', 'javafx.graphics', 'javafx.base']
 }
 
 dependencies {
     implementation 'org.testng:testng:7.6.1'
     implementation 'org.junit.jupiter:junit-jupiter:5.8.2'
-    implementation 'com.itextpdf:itext7-core:7.2.3'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.27'
 }
 
 test {
@@ -53,4 +54,13 @@ jlink {
 
 jlinkZip {
     group = 'distribution'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'org.observations.Observations',
+                'Class-Path': configurations.collect { it.getName() }.join(' ')
+        )
+    }
 }
