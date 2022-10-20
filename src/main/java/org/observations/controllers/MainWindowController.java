@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import org.observations.gui.MainWindowView;
 import org.observations.model.ModelAdapter;
 import org.observations.model.core.ModelAdapterImpl;
+import org.observations.utility.PdfExporter;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -257,5 +258,10 @@ public class MainWindowController {
             throw new RuntimeException(e);
         }
         return Collections.unmodifiableMap(data);
+    }
+
+    public void exportPdf(){
+        PdfExporter pdfExporter = new PdfExporter();
+        pdfExporter.exportPdf(this.getAllData());
     }
 }

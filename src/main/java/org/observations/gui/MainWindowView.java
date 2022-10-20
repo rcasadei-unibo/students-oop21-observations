@@ -29,11 +29,19 @@ public class MainWindowView {
         this.view.setTop(topBox);
         this.view.setCenter(listsBox);
 
-        Button chartsWindowButton = new Button();
-        chartsWindowButton.setText("Mostra grafico");
+        Button chartsWindowButton = new Button("Mostra grafico");
         chartsWindowButton.setOnAction(event -> this.onShowChartsButton());
 
-        this.view.setBottom(chartsWindowButton);
+        Button pdfExportButton = new Button("Esporta data in pdf");
+        pdfExportButton.setOnAction(event -> this.onPdfExportButton());
+
+        HBox bottomBox = new HBox(chartsWindowButton, pdfExportButton);
+        bottomBox.setSpacing(LIST_BOX_SPACING);
+        this.view.setBottom(bottomBox);
+    }
+
+    private void onPdfExportButton() {
+        this.controller.exportPdf();
     }
 
     private void onShowChartsButton() {
