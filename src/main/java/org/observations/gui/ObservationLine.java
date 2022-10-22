@@ -10,31 +10,25 @@ public class ObservationLine extends HBox implements View<Integer> {
 
     final Integer SPACING = 5;
     private final ObservationsViewController controller;
-    private final Label moment;
+    private final String date;
     private final Label activity;
     private final Label observations;
 
-    public ObservationLine(ObservationsViewController controller, String moment, String activity, Integer observations) {
+    public ObservationLine(ObservationsViewController controller, String date, String activity, Integer observations) {
         this.controller = controller;
-        this.moment = new Label(moment);
+        this.date = date;
         this.activity = new Label(activity);
         this.observations = new Label(observations.toString());
 
         Button add = new Button("+");
-        Button reduce = new Button("-");
 
-        this.getChildren().addAll(this.moment, this.activity, this.observations, add, reduce);
+        this.getChildren().addAll(this.activity, this.observations, add);
         this.setSpacing(SPACING);
 
 
         add.setOnAction(event -> {
             System.out.println("add observations button hit");
             this.incrementObservation();
-        });
-
-        reduce.setOnAction(event -> {
-            System.out.println("reduce observations button hit");
-            this.reduceObservations();
         });
     }
 
@@ -50,10 +44,10 @@ public class ObservationLine extends HBox implements View<Integer> {
     }
 
     private void incrementObservation() {
-        controller.updateObservationsCount(this.moment.getText(), this.activity.getText(), true);
+        controller.updateObservationsCount(this.date, this.activity.getText(), true);
     }
 
     private void reduceObservations() {
-        controller.updateObservationsCount(this.moment.getText(), this.activity.getText(), false);
+        controller.updateObservationsCount(this.date, this.activity.getText(), false);
     }
 }

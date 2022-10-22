@@ -18,12 +18,13 @@ import java.util.stream.Collectors;
 
 public class ObservationsView implements View<Map<String, Map<String, Integer>>> {
 
-    private static final double TOP_BOX_SPACING = 10;
+    private static final double TOP_BOX_SPACING = 16;
     private static final double LIST_BOX_SPACING = 8;
     private final ObservationsViewController controller;
     private final BorderPane view = new BorderPane();
     private final ScrollPane listPane = new ScrollPane();
     private final HBox bottomBox = new HBox();
+    private final Label dateLabel = new Label();
     private final ComboBox<String> dateSelector = new ComboBox<>();
     private String lastDateSelected = "";
     private ObservationInsertionPopup popup;
@@ -34,11 +35,9 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
         this.view.setMinWidth(150);
         this.createInsertButton();
 
-        this.dateSelector.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.setDateSelector();
-        });
+        this.dateSelector.valueProperty().addListener((observable, oldValue, newValue) -> this.setDateSelector());
 
-        HBox topBox = new HBox(new Label("Osservazioni"), new Label("Data: "), dateSelector);
+        HBox topBox = new HBox(new Label("Osservazioni"), dateSelector, new Label("Data: "), this.dateLabel);
         topBox.setSpacing(TOP_BOX_SPACING);
         this.view.setTop(topBox);
         this.view.setBottom(bottomBox);
@@ -46,11 +45,17 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
 
     private void setDateSelector() {
         if (!dateSelector.getSelectionModel().isEmpty()) {
-            this.lastDateSelected = dateSelector.getSelectionModel().getSelectedItem();
-            this.setListPane(this.lastDateSelected);
+            String date = dateSelector.getSelectionModel().getSelectedItem();
+            this.lastDateSelected = date;
+            this.dateLabel.setText(date);
+            this.setListPane(date);
         } else if (dateSelector.getItems().contains(this.lastDateSelected)) {
             this.dateSelector.getSelectionModel().select(this.lastDateSelected);
+        } else if (!this.controller.getUpdateAfterIncrement()) {
+            this.lastDateSelected = "";
+            this.dateLabel.setText("");
         }
+
     }
 
     public void update(Map<String, Map<String, Integer>> input) {
@@ -62,7 +67,10 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
                             .sorted(new DateComparator())
                             .collect(Collectors.toUnmodifiableList()));
             
-            if (this.lastDateSelected != null) {
+            if (this.lastDateSelected != null && !lastDateSelected.isEmpty()) {
+                if(this.controller.getUpdateAfterIncrement()){
+                    this.controller.setUpdateAfterIncrement(false);
+                }
                 this.setListPane(this.lastDateSelected);
             } else {
                 this.view.setCenter(new Label("Seleziona una data"));
@@ -82,8 +90,6 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
             }
             this.listPane.setContent(listBox);
             this.view.setCenter(listPane);
-        } else {
-            this.view.setCenter(new Label("Data invalida"));
         }
     }
 
@@ -110,5 +116,4 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
             this.popup.show();
         }
     }
-
 }

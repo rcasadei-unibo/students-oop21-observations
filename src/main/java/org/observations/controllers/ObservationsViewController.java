@@ -14,6 +14,10 @@ public class ObservationsViewController implements SubController<String, Map<Str
     private final List<String> observationTypes;
 
 
+
+    private Boolean updateAfterIncrement = false;
+
+
     public ObservationsViewController(MainWindowController mainWindowController, List<String> observationTypesList) {
         this.parentController = mainWindowController;
         this.observationTypes = observationTypesList;
@@ -42,10 +46,19 @@ public class ObservationsViewController implements SubController<String, Map<Str
 
     public void updateObservationsCount(String date, String activity, Boolean isIncrement) {
         if(isIncrement){
+            this.updateAfterIncrement = true;
             this.parentController.incrementObservationCount(date, activity);
         } else {
             this.parentController.decrementObservationCount(date, activity);
         }
+    }
+
+    public Boolean getUpdateAfterIncrement() {
+        return updateAfterIncrement;
+    }
+
+    public void setUpdateAfterIncrement(Boolean updateAfterIncrement) {
+        this.updateAfterIncrement = updateAfterIncrement;
     }
 
     public List<String> getObservationsTypesNames() {
