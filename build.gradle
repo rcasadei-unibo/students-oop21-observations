@@ -3,11 +3,11 @@ plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.13'
     id 'org.beryx.jlink' version '2.25.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
-mainClassName = "org.observations.Observations"
 group 'org'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 repositories {
     mavenCentral()
@@ -26,12 +26,12 @@ tasks.withType(JavaCompile) {
 
 application {
     mainModule = 'org.observations'
-    mainClass = 'org.observations.Observations'
+    mainClassName = 'org.observations.AppLauncher'
 }
 
 javafx {
     version = '17.0.2'
-    modules = ['javafx.controls', 'javafx.graphics', 'javafx.base']
+    modules = ['javafx.controls', 'javafx.graphics']
 }
 
 dependencies {
@@ -56,11 +56,20 @@ jlinkZip {
     group = 'distribution'
 }
 
+//current runnable jar not working for missing javafx modules
 jar {
     manifest {
         attributes(
-                'Main-Class': 'org.observations.Observations',
-                'Class-Path': configurations.collect { it.getName() }.join(' ')
+                'Main-Class': 'org.observations.AppLauncher'
+        )
+    }
+}
+
+//Use this to generate runnable jar
+shadowJar{
+    manifest {
+        attributes(
+                'Main-Class': 'org.observations.AppLauncher'
         )
     }
 }
