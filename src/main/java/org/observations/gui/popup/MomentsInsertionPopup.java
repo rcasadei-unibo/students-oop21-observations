@@ -16,6 +16,7 @@ import org.observations.controllers.MomentsViewController;
  */
 public class MomentsInsertionPopup extends Stage {
 
+    private static final String ALERT_MESSAGE = "Deve essere scelto un momento.";
     private final MomentsViewController controller;
 
     public MomentsInsertionPopup(MomentsViewController controller) {
@@ -37,7 +38,7 @@ public class MomentsInsertionPopup extends Stage {
                 comboBox.getSelectionModel().clearSelection();
                 this.close();
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Deve essere scelto un momento.");
+                Alert alert = new Alert(Alert.AlertType.ERROR, ALERT_MESSAGE);
                 alert.show();
             }
         });

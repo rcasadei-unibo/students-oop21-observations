@@ -16,6 +16,7 @@ import org.observations.controllers.StudentsViewController;
  */
 public class StudentInsertionPopup extends Stage {
 
+    private static final String ALERT_MESSAGE = "Entrambi i campi devono essere riempiti.";
     private final StudentsViewController controller;
 
     public StudentInsertionPopup(StudentsViewController controller) {
@@ -34,12 +35,12 @@ public class StudentInsertionPopup extends Stage {
 
         confirmButton.setOnAction(event -> {
             if (!surname.getText().isEmpty() && !name.getText().isEmpty()) {
-                controller.updateModel(name.getText() + " " + surname.getText());
+                controller.updateModel(surname.getText() + " " + name.getText());
                 name.clear();
                 surname.clear();
                 this.close();
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Entrambi i campi devono essere riempiti.");
+                Alert alert = new Alert(Alert.AlertType.ERROR, ALERT_MESSAGE);
                 alert.show();
             }
         });

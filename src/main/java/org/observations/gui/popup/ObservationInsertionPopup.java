@@ -16,6 +16,8 @@ import java.util.List;
  * Custom popup which create a window for the user to input a new observation to the model to save.
  */
 public class ObservationInsertionPopup extends Stage {
+
+    private static final String ALERT_MESSAGE = "Deve essere scelto un tipo di osservazione.";
     private final ObservationsViewController controller;
 
     public ObservationInsertionPopup(ObservationsViewController controller) {
@@ -42,7 +44,7 @@ public class ObservationInsertionPopup extends Stage {
                 comboBox.getSelectionModel().clearSelection();
                 this.close();
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Deve essere scelto un tipo di osservazione.");
+                Alert alert = new Alert(Alert.AlertType.ERROR, ALERT_MESSAGE);
                 alert.show();
             }
         });

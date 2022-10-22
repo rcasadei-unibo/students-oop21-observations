@@ -10,6 +10,7 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,25 +25,27 @@ public class PdfExporter {
     private static final String EXPORT_PATH = ROOT + SEP + NAME_APP + SEP;
     private static final String PDF_NAME = "Observations.pdf";
 
-    private static final PDFont TITLE_TEXT_FONT = PDType1Font.HELVETICA_BOLD;
-    private static final float TITLE_TEXT_SIZE = 24;
+    private static final float EMPTY_LINE_SIZE = 24;
+    private static final PDFont MAIN_TITLE_TEXT_FONT = PDType1Font.HELVETICA_BOLD;
+    private static final float MAIN_TITLE_TEXT_SIZE = 24;
     private static final PDFont SUB_TITLE_TEXT_FONT = PDType1Font.TIMES_ITALIC;
     private static final float SUB_TITLE_TEXT_SIZE = 14;
+
+    private static final PDFont TITLE_TEXT_FONT = PDType1Font.TIMES_BOLD;
+    private static final float TITLE_TEXT_SIZE = 20;
     private static final PDFont TEXT_FONT = PDType1Font.TIMES_ROMAN;
     private static final float TEXT_SIZE = 16;
 
     private static final Integer PAGE_START_OFFSET = 50;
-    private static final int TITLE_X_OFFSET = 25;
+    private static final int MAIN_TITLE_X_OFFSET = 25;
+    private static final int SUB_TITLE_X_OFFSET = 45;
+    private static final int TITLE_X_OFFSET = 45;
     private static final int TEXT_X_OFFSET = 60;
     private static final float LEADING = 14;
 
-    private PDDocument document;
+    private final PDDocument document;
     private PDPageContentStream stream;
-    private PDPage page;
-    private Integer pageWidth;
-    private Integer pageHeight;
     private Integer currentLineYValue;
-
 
     public PdfExporter() {
         try {
@@ -53,28 +56,32 @@ public class PdfExporter {
         }
     }
 
-    public boolean exportPdf(Map<String, Map<String, Map<String, Map<String, Integer>>>> allData) {
+    /**
+     * Export all data saved into a user legible pdf file.
+     *
+     * @param data map containing all data.
+     */
+    public void exportPdf(Map<String, Map<String, Map<String, Map<String, Integer>>>> data) {
         try {
-            this.addSingleLineText("Observations", TITLE_X_OFFSET, this.currentLineYValue, PDType1Font.HELVETICA_BOLD, TITLE_TEXT_SIZE);
-            this.addSingleLineText("PDF creato il " + " " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
-                    25, this.currentLineYValue, SUB_TITLE_TEXT_FONT, SUB_TITLE_TEXT_SIZE);
+            this.addSingleLineText("Observations", MAIN_TITLE_X_OFFSET, this.currentLineYValue, MAIN_TITLE_TEXT_FONT, MAIN_TITLE_TEXT_SIZE);
+            this.addSingleLineText(this.createSubTitle(), SUB_TITLE_X_OFFSET, this.currentLineYValue, SUB_TITLE_TEXT_FONT, SUB_TITLE_TEXT_SIZE);
 
-            for (String student : allData.keySet().stream().sorted().collect(Collectors.toList())) {
-                this.addSingleLineText(" ", 45, this.currentLineYValue, TITLE_TEXT_FONT, 45);
-                this.addSingleLineText(student, 45, this.currentLineYValue, PDType1Font.TIMES_BOLD, 20);
+            for (String student : data.keySet().stream().sorted().collect(Collectors.toList())) {
+                this.addSingleLineText(" ", TEXT_X_OFFSET, this.currentLineYValue, MAIN_TITLE_TEXT_FONT, EMPTY_LINE_SIZE * 2);
+                this.addSingleLineText(student, TITLE_X_OFFSET, this.currentLineYValue, TITLE_TEXT_FONT, TITLE_TEXT_SIZE);
 
-                for (String moment : allData.get(student).keySet().stream().sorted().collect(Collectors.toList())) {
-                    this.addSingleLineText(" ", 45, this.currentLineYValue, TITLE_TEXT_FONT, TEXT_SIZE);
-                    this.addSingleLineText(moment, TEXT_X_OFFSET, this.currentLineYValue, PDType1Font.TIMES_BOLD, TEXT_SIZE);
+                for (String moment : data.get(student).keySet().stream().sorted().collect(Collectors.toList())) {
+                    this.addSingleLineText(" ", TEXT_X_OFFSET, this.currentLineYValue, MAIN_TITLE_TEXT_FONT, EMPTY_LINE_SIZE);
+                    this.addSingleLineText(moment, SUB_TITLE_X_OFFSET, this.currentLineYValue, TEXT_FONT, TEXT_SIZE);
 
-                    for (String date : allData.get(student).get(moment).keySet().stream().sorted(new DateComparator()).collect(Collectors.toList())) {
-                        this.addSingleLineText(" ", 45, this.currentLineYValue, TITLE_TEXT_FONT, TEXT_SIZE);
-                        this.addSingleLineText(date, TEXT_X_OFFSET, this.currentLineYValue, TEXT_FONT, TEXT_SIZE);
+                    for (String date : data.get(student).get(moment).keySet().stream().sorted(new DateComparator()).collect(Collectors.toList())) {
+                        this.addSingleLineText(" ", TEXT_X_OFFSET, this.currentLineYValue, MAIN_TITLE_TEXT_FONT, EMPTY_LINE_SIZE);
+                        this.addSingleLineText(date, SUB_TITLE_X_OFFSET, this.currentLineYValue, TEXT_FONT, TEXT_SIZE);
 
                         List<String> observationsList = new ArrayList<>();
 
-                        for (String observation : allData.get(student).get(moment).get(date).keySet().stream().sorted().collect(Collectors.toList())) {
-                            observationsList.add(observation + ": " + allData.get(student).get(moment).get(date).get(observation));
+                        for (String observation : data.get(student).get(moment).get(date).keySet().stream().sorted().collect(Collectors.toList())) {
+                            observationsList.add(observation + ": " + data.get(student).get(moment).get(date).get(observation));
                         }
                         this.addMultiLineText(observationsList, LEADING, TEXT_X_OFFSET, this.currentLineYValue, TEXT_FONT, TEXT_SIZE);
                     }
@@ -87,46 +94,50 @@ public class PdfExporter {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return false;
+    }
+
+    private String createSubTitle() {
+        String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        String time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        return "PDF creato il " + date + " " + time;
     }
 
     private void addSingleLineText(String text, int xPosition, int yPosition, PDFont font, float fontSize) throws IOException {
         if (this.isEndOfPage(fontSize)) {
-            stream.close();
+            this.stream.close();
             this.setNewPage();
             yPosition = this.currentLineYValue;
         }
-        stream.beginText();
-        stream.setFont(font, fontSize);
-        stream.newLineAtOffset(xPosition, yPosition);
-        stream.showText(text);
-        stream.endText();
+        this.stream.beginText();
+        this.stream.setFont(font, fontSize);
+        this.stream.newLineAtOffset(xPosition, yPosition);
+        this.stream.showText(text);
         this.currentLineYValue -= (int) fontSize;
-        stream.moveTo(0, 0);
-
+        this.stream.endText();
+        this.stream.moveTo(0, 0);
     }
 
     private void addMultiLineText(List<String> textList, float leading, int xPosition, int yPosition, PDFont font, float fontSize) throws IOException {
-        stream.beginText();
-        stream.setFont(font, fontSize);
-        stream.setLeading(leading);
-        stream.newLineAtOffset(xPosition, yPosition);
+        this.stream.beginText();
+        this.stream.setFont(font, fontSize);
+        this.stream.setLeading(leading);
+        this.stream.newLineAtOffset(xPosition, yPosition);
         for (String textLine : textList) {
             if (this.isEndOfPage(fontSize)) {
-                stream.endText();
-                stream.close();
+                this.stream.endText();
+                this.stream.close();
                 this.setNewPage();
-                stream.beginText();
-                stream.setFont(font, fontSize);
-                stream.setLeading(leading);
-                stream.newLineAtOffset(xPosition, this.currentLineYValue);
+                this.stream.beginText();
+                this.stream.setFont(font, fontSize);
+                this.stream.setLeading(leading);
+                this.stream.newLineAtOffset(xPosition, this.currentLineYValue);
             }
-            stream.showText(textLine);
-            stream.newLine();
+            this.stream.showText(textLine);
+            this.stream.newLine();
             this.currentLineYValue -= (int) leading;
         }
-        stream.endText();
-        stream.moveTo(0, 0);
+        this.stream.endText();
+        this.stream.moveTo(0, 0);
     }
 
     private float getTextWidth(String text, PDFont font, float fontSize) throws IOException {
@@ -134,12 +145,11 @@ public class PdfExporter {
     }
 
     private void setNewPage() throws IOException {
-        this.page = new PDPage(PDRectangle.A4);
-        this.document.addPage(this.page);
-        this.stream = new PDPageContentStream(this.document, this.page);
-        this.pageWidth = (int) this.page.getTrimBox().getWidth();
-        this.pageHeight = (int) this.page.getTrimBox().getHeight();
-        this.currentLineYValue = this.pageHeight - PAGE_START_OFFSET;
+        PDPage page = new PDPage(PDRectangle.A4);
+        this.document.addPage(page);
+        this.stream = new PDPageContentStream(this.document, page);
+        Integer pageHeight = (int) page.getTrimBox().getHeight();
+        this.currentLineYValue = pageHeight - PAGE_START_OFFSET;
     }
 
     private boolean isEndOfPage(float offset) {
