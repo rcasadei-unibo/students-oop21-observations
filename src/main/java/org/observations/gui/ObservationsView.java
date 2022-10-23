@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 public class ObservationsView implements View<Map<String, Map<String, Integer>>> {
 
+
     private static final String LABEL_TEXT = "Osservazioni";
     private static final String NO_DATA_FOUND_MESSAGE = "Nessuna osservazione trovata";
     private static final String DATE_LABEL_TEXT = "Data: ";
@@ -92,8 +93,6 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
 
     /**
      * Show/hide the view.
-     *
-     * @param value
      */
     public void setVisible(Boolean value) {
         this.view.setVisible(value);
@@ -103,7 +102,9 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
      * Update the popup selector
      */
     public void updateObservationSelectorList() {
-        this.popup.updateObservationSelector();
+        if (this.popup != null) {
+            this.popup.updateObservationSelector();
+        }
     }
 
     private void setDateSelector() {
@@ -164,4 +165,49 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
             this.typePopup.show();
         }
     }
+
+    /**
+     * Simple container for the observation name its counter
+     * and a button to increment the said counter
+     */
+    private static class ObservationLine extends HBox {
+
+        final Integer SPACING = 5;
+        private final ObservationsViewController controller;
+        private final String date;
+        private final Label activity;
+        private final Label observations;
+
+        public ObservationLine(ObservationsViewController controller, String date, String activity, Integer observations) {
+            this.controller = controller;
+            this.date = date;
+            this.activity = new Label(activity);
+            this.observations = new Label(observations.toString());
+
+            Button add = new Button("+");
+
+            this.getChildren().addAll(this.activity, this.observations, add);
+            this.setSpacing(SPACING);
+
+            add.setOnAction(event -> {
+                System.out.println("add observations button hit");
+                this.incrementObservation();
+            });
+        }
+
+        //call controller to increment the counter
+        private void incrementObservation() {
+            controller.updateObservationsCount(this.date, this.activity.getText(), true);
+        }
+
+        //call the controller to decrement the counter
+        private void reduceObservations() {
+            controller.updateObservationsCount(this.date, this.activity.getText(), false);
+        }
+
+        private Node getView() {
+            return this;
+        }
+    }
 }
+

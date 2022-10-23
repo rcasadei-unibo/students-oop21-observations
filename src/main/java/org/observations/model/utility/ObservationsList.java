@@ -17,7 +17,7 @@ public enum ObservationsList {
 
   MAKE_ERROR("compie errori nella scelta dei dati da rielaborare");
 
-  private String showText;
+  private final String showText;
 
   ObservationsList(final String showText) {
     this.showText = showText;

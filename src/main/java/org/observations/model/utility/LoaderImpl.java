@@ -4,6 +4,7 @@ import org.observations.model.Loader;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,9 +22,7 @@ public class LoaderImpl implements Loader {
   public List<String> loadFileFolder(final String dir) {
     final List<String> listFileFolder = new ArrayList<>();
     if (!dir.isBlank() && new File(dir).exists()) {
-      for (final String e : new File(dir).list()) {
-        listFileFolder.add(e);
-      }
+      Collections.addAll(listFileFolder, new File(dir).list());
       listFileFolder.sort((a, b) -> a.compareTo(b));
     }
     return listFileFolder;

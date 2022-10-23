@@ -23,7 +23,7 @@ public enum MomentsList {
 
   SCIENCE("scienze");
 
-  private String showText;
+  private final String showText;
 
   MomentsList(final String showText) {
     this.showText = showText;

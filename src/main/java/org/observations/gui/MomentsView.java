@@ -70,8 +70,6 @@ public class MomentsView implements View<List<String>> {
 
     /**
      * Show/hide the view.
-     *
-     * @param value
      */
     public void setVisible(Boolean value) {
         this.view.setVisible(value);
@@ -81,7 +79,9 @@ public class MomentsView implements View<List<String>> {
      * Update the popup selector
      */
     public void updateObservationSelectorList() {
-        this.popup.updateObservationSelector();
+        if (this.popup != null) {
+            this.popup.updateObservationSelector();
+        }
     }
 
     private void createInsertButton() {
