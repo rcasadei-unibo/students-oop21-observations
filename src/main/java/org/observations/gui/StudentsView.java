@@ -15,6 +15,10 @@ import java.util.List;
 
 public class StudentsView implements View<List<String>> {
 
+    private static final String LABEL_TEXT = "Studenti";
+    private static final String NO_DATA_FOUND_MESSAGE = "Nessuno studente trovato";
+    private static final String INSERT_BUTTON_TEXT = "+";
+
     private final StudentsViewController controller;
     private final BorderPane view = new BorderPane();
     private final ScrollPane listPane = new ScrollPane();
@@ -25,7 +29,7 @@ public class StudentsView implements View<List<String>> {
         this.controller = controller;
         this.view.setMinWidth(150);
         this.createInsertButton();
-        this.view.setTop(new Label("Studenti"));
+        this.view.setTop(new Label(LABEL_TEXT));
         this.view.setBottom(bottomBox);
     }
 
@@ -41,7 +45,7 @@ public class StudentsView implements View<List<String>> {
             this.listPane.setContent(listBox);
             this.view.setCenter(listPane);
         } else {
-            this.view.setCenter(new Label("Nessuno studente trovato"));
+            this.view.setCenter(new Label(NO_DATA_FOUND_MESSAGE));
         }
     }
 
@@ -54,7 +58,7 @@ public class StudentsView implements View<List<String>> {
     }
 
     private void createInsertButton() {
-        Button insertButton = new Button("+");
+        Button insertButton = new Button(INSERT_BUTTON_TEXT);
         insertButton.setOnAction(event -> this.onInsertButtonClick());
         bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
         bottomBox.getChildren().add(insertButton);

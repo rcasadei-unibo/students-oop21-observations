@@ -11,6 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.observations.controllers.ObservationsViewController;
 import org.observations.gui.popup.ObservationInsertionPopup;
+import org.observations.gui.popup.ObservationTypeInsertionPopup;
 import org.observations.utility.DateComparator;
 
 import java.util.Map;
@@ -18,8 +19,15 @@ import java.util.stream.Collectors;
 
 public class ObservationsView implements View<Map<String, Map<String, Integer>>> {
 
+    private static final String LABEL_TEXT = "Osservazioni";
+    private static final String NO_DATA_FOUND_MESSAGE = "Nessuna osservazione trovata";
+    private static final String DATE_LABEL_TEXT = "Data: ";
+    private static final String DATE_SELECTION_MESSAGE = "Seleziona una data";
+    private static final String INSERT_BUTTON_TEXT = "+";
+    private static final String NEW_TYPE_BUTTON_TEXT = "Aggiungi nuovo tipo di osservazione";
     private static final double TOP_BOX_SPACING = 16;
     private static final double LIST_BOX_SPACING = 8;
+
     private final ObservationsViewController controller;
     private final BorderPane view = new BorderPane();
     private final ScrollPane listPane = new ScrollPane();
@@ -29,33 +37,21 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
     private String lastDateSelected = "";
     private ObservationInsertionPopup popup;
     private Map<String, Map<String, Integer>> temporalData;
+    private ObservationTypeInsertionPopup typePopup;
 
     public ObservationsView(ObservationsViewController controller) {
         this.controller = controller;
         this.view.setMinWidth(150);
+        this.createNewTypeButton();
         this.createInsertButton();
 
         this.dateSelector.valueProperty().addListener((observable, oldValue, newValue) -> this.setDateSelector());
+        this.dateLabel.setText(DATE_LABEL_TEXT);
 
-        HBox topBox = new HBox(new Label("Osservazioni"), dateSelector, new Label("Data: "), this.dateLabel);
+        HBox topBox = new HBox(new Label(LABEL_TEXT), dateSelector, this.dateLabel);
         topBox.setSpacing(TOP_BOX_SPACING);
         this.view.setTop(topBox);
         this.view.setBottom(bottomBox);
-    }
-
-    private void setDateSelector() {
-        if (!dateSelector.getSelectionModel().isEmpty()) {
-            String date = dateSelector.getSelectionModel().getSelectedItem();
-            this.lastDateSelected = date;
-            this.dateLabel.setText(date);
-            this.setListPane(date);
-        } else if (dateSelector.getItems().contains(this.lastDateSelected)) {
-            this.dateSelector.getSelectionModel().select(this.lastDateSelected);
-        } else if (!this.controller.getUpdateAfterIncrement()) {
-            this.lastDateSelected = "";
-            this.dateLabel.setText("");
-        }
-
     }
 
     public void update(Map<String, Map<String, Integer>> input) {
@@ -66,17 +62,43 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
                     this.temporalData.keySet().stream()
                             .sorted(new DateComparator())
                             .collect(Collectors.toUnmodifiableList()));
-            
+
             if (this.lastDateSelected != null && !lastDateSelected.isEmpty()) {
-                if(this.controller.getUpdateAfterIncrement()){
+                if (this.controller.getUpdateAfterIncrement()) {
                     this.controller.setUpdateAfterIncrement(false);
                 }
                 this.setListPane(this.lastDateSelected);
             } else {
-                this.view.setCenter(new Label("Seleziona una data"));
+                this.view.setCenter(new Label(DATE_SELECTION_MESSAGE));
             }
         } else {
-            this.view.setCenter(new Label("Nessuna osservazione trovata"));
+            this.view.setCenter(new Label(NO_DATA_FOUND_MESSAGE));
+        }
+    }
+
+    public Node getView() {
+        return this.view;
+    }
+
+    public void setVisible(Boolean value) {
+        this.view.setVisible(value);
+    }
+
+    public void updateObservationSelectorList() {
+        this.popup.updateObservationSelector();
+    }
+
+    private void setDateSelector() {
+        if (!dateSelector.getSelectionModel().isEmpty()) {
+            String date = dateSelector.getSelectionModel().getSelectedItem();
+            this.lastDateSelected = date;
+            this.dateLabel.setText(DATE_LABEL_TEXT + " " + date);
+            this.setListPane(date);
+        } else if (dateSelector.getItems().contains(this.lastDateSelected)) {
+            this.dateSelector.getSelectionModel().select(this.lastDateSelected);
+        } else if (!this.controller.getUpdateAfterIncrement()) {
+            this.lastDateSelected = "";
+            this.dateLabel.setText(DATE_LABEL_TEXT);
         }
     }
 
@@ -93,16 +115,15 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
         }
     }
 
-    public Node getView() {
-        return this.view;
-    }
-
-    public void setVisible(Boolean value) {
-        this.view.setVisible(value);
+    private void createNewTypeButton() {
+        Button insertButton = new Button(NEW_TYPE_BUTTON_TEXT);
+        insertButton.setOnAction(event -> this.onNewTypeButtonClick());
+        bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
+        bottomBox.getChildren().add(insertButton);
     }
 
     private void createInsertButton() {
-        Button insertButton = new Button("+");
+        Button insertButton = new Button(INSERT_BUTTON_TEXT);
         insertButton.setOnAction(event -> this.onInsertButtonClick());
         bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
         bottomBox.getChildren().add(insertButton);
@@ -114,6 +135,15 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
         }
         if (!this.popup.isShowing()) {
             this.popup.show();
+        }
+    }
+
+    private void onNewTypeButtonClick() {
+        if (this.typePopup == null) {
+            this.typePopup = new ObservationTypeInsertionPopup(this.controller, this);
+        }
+        if (!this.typePopup.isShowing()) {
+            this.typePopup.show();
         }
     }
 }

@@ -19,6 +19,7 @@ public class ObservationInsertionPopup extends Stage {
 
     private static final String ALERT_MESSAGE = "Deve essere scelto un tipo di osservazione.";
     private final ObservationsViewController controller;
+    private final ComboBox<String> observationSelector = new ComboBox<>();
 
     public ObservationInsertionPopup(ObservationsViewController controller) {
         this.controller = controller;
@@ -29,19 +30,17 @@ public class ObservationInsertionPopup extends Stage {
         Label popupMessage = new Label("Seleziona un'osservazione");
         Button confirmButton = new Button("Inserisci osservazione");
         Button cancelButton = new Button("Cancella azione");
-        ComboBox<String> comboBox = new ComboBox<>();
         DatePicker picker = new DatePicker(LocalDate.now());
-        comboBox.getItems().addAll(this.controller.getObservationsTypesNames());
+        this.updateObservationSelector();
 
         confirmButton.setOnAction(event -> {
-            if(!comboBox.getSelectionModel().getSelectedItem().isEmpty()) {
-
+            if(!observationSelector.getSelectionModel().getSelectedItem().isEmpty()) {
                 controller.updateModel(
                         List.of(
                                 picker.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")),
-                                comboBox.getSelectionModel().getSelectedItem()));
+                                observationSelector.getSelectionModel().getSelectedItem()));
 
-                comboBox.getSelectionModel().clearSelection();
+                observationSelector.getSelectionModel().clearSelection();
                 this.close();
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR, ALERT_MESSAGE);
@@ -54,11 +53,17 @@ public class ObservationInsertionPopup extends Stage {
         VBox box = new VBox();
         box.setSpacing(6);
         box.setAlignment(Pos.CENTER);
+
         HBox hbox = new HBox(confirmButton, cancelButton);
         hbox.setSpacing(8);
-        box.getChildren().addAll(popupMessage, comboBox, picker, hbox);
+        box.getChildren().addAll(popupMessage, observationSelector, picker, hbox);
 
         Scene scene = new Scene(box);
         this.setScene(scene);
+    }
+
+    public void updateObservationSelector() {
+        this.observationSelector.getItems().clear();
+        this.observationSelector.getItems().addAll(this.controller.getObservationsTypesNames());
     }
 }

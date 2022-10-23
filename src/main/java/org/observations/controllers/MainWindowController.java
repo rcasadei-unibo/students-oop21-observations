@@ -191,16 +191,17 @@ public class MainWindowController {
     }
 
     /**
-     * Insert a new moment.
+     * Insert a new moment or create a new one if it doesn't exist.
      *
      * @param moment name of moment.
      */
-    public void insertNewMoment(String moment) {
+    public List<String> insertNewMoment(String moment) {
         try {
-            adapter.createMoment(moment);
+            this.adapter.createMoment(moment);
             this.updateMomentsPanel(this.lastStudentSelected);
             this.observationsViewController.setViewVisible(false);
             this.chartsWindowController.updateChartsWindow();
+            return this.adapter.getMomentsListFromFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -211,9 +212,10 @@ public class MainWindowController {
      *
      * @param observationType name of new type.
      */
-    public void insertNewObservationType(String observationType) {
+    public List<String> insertNewObservationType(String observationType) {
         try {
             adapter.createObservationsType(observationType);
+            return adapter.getTypesListFromFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

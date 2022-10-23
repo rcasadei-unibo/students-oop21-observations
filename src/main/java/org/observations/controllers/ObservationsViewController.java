@@ -11,7 +11,7 @@ public class ObservationsViewController implements SubController<String, Map<Str
 
     private final MainWindowController parentController;
     private final View<Map<String, Map<String, Integer>>> view;
-    private final List<String> observationTypes;
+    private List<String> observationTypes;
 
 
 
@@ -63,5 +63,9 @@ public class ObservationsViewController implements SubController<String, Map<Str
 
     public List<String> getObservationsTypesNames() {
         return this.observationTypes;
+    }
+
+    public void insertNewObservationType(String typeName){
+        this.observationTypes = this.parentController.insertNewObservationType(typeName);
     }
 }

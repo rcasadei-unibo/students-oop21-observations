@@ -18,9 +18,9 @@ public class MomentsInsertionPopup extends Stage {
 
     private static final String ALERT_MESSAGE = "Deve essere scelto un momento.";
     private final MomentsViewController controller;
+    private final ComboBox<String> momentSelector = new ComboBox<>();
 
     public MomentsInsertionPopup(MomentsViewController controller) {
-
         this.controller = controller;
         this.initOwner(controller.getView().getScene().getWindow());
         this.setWidth(250);
@@ -29,13 +29,12 @@ public class MomentsInsertionPopup extends Stage {
         Label popupMessage = new Label("Seleziona un momento");
         Button confirmButton = new Button("Inserisci momento");
         Button cancelButton = new Button("Cancella azione");
-        ComboBox<String> comboBox = new ComboBox<>();
-        comboBox.getItems().addAll(this.controller.getMomentList());
+        this.updateObservationSelector();
 
         confirmButton.setOnAction(event -> {
-            if (!comboBox.getSelectionModel().getSelectedItem().isEmpty()) {
-                controller.updateModel(comboBox.getSelectionModel().getSelectedItem());
-                comboBox.getSelectionModel().clearSelection();
+            if (!momentSelector.getSelectionModel().getSelectedItem().isEmpty()) {
+                controller.updateModel(momentSelector.getSelectionModel().getSelectedItem());
+                momentSelector.getSelectionModel().clearSelection();
                 this.close();
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR, ALERT_MESSAGE);
@@ -46,10 +45,19 @@ public class MomentsInsertionPopup extends Stage {
         cancelButton.setOnAction(event -> this.close());
 
         VBox box = new VBox();
+        box.setSpacing(8);
         box.setAlignment(Pos.CENTER);
-        box.getChildren().addAll(popupMessage, comboBox, new HBox(confirmButton, cancelButton));
+
+        HBox hbox = new HBox(confirmButton, cancelButton);
+        hbox.setSpacing(8);
+        box.getChildren().addAll(popupMessage, momentSelector, hbox);
 
         Scene scene = new Scene(box);
         this.setScene(scene);
+    }
+
+    public void updateObservationSelector() {
+        this.momentSelector.getItems().clear();
+        this.momentSelector.getItems().addAll(this.controller.getMomentList());
     }
 }
