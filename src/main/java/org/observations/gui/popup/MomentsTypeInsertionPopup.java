@@ -12,6 +12,9 @@ import javafx.stage.Stage;
 import org.observations.controllers.MomentsViewController;
 import org.observations.gui.MomentsView;
 
+/**
+ * Custom popup which create a window for the user to input a new type of observation to save.
+ */
 public class MomentsTypeInsertionPopup extends Stage {
 
     private static final String ALERT_MESSAGE = "Il campo deve essere riempito";

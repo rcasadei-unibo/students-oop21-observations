@@ -54,6 +54,11 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
         this.view.setBottom(bottomBox);
     }
 
+    /**
+     * Update the view with the new input.
+     *
+     * @param input value tho be inputted.
+     */
     public void update(Map<String, Map<String, Integer>> input) {
         this.dateSelector.getItems().clear();
         if (!input.isEmpty()) {
@@ -64,8 +69,8 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
                             .collect(Collectors.toUnmodifiableList()));
 
             if (this.lastDateSelected != null && !lastDateSelected.isEmpty()) {
-                if (this.controller.getUpdateAfterIncrement()) {
-                    this.controller.setUpdateAfterIncrement(false);
+                if (this.controller.isPrecedentOperationIsCounter()) {
+                    this.controller.setPrecedentOperationIsCounter(false);
                 }
                 this.setListPane(this.lastDateSelected);
             } else {
@@ -76,14 +81,27 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
         }
     }
 
+    /**
+     * Returns the view root node.
+     *
+     * @return node of root.
+     */
     public Node getView() {
         return this.view;
     }
 
+    /**
+     * Show/hide the view.
+     *
+     * @param value
+     */
     public void setVisible(Boolean value) {
         this.view.setVisible(value);
     }
 
+    /**
+     * Update the popup selector
+     */
     public void updateObservationSelectorList() {
         this.popup.updateObservationSelector();
     }
@@ -96,7 +114,7 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
             this.setListPane(date);
         } else if (dateSelector.getItems().contains(this.lastDateSelected)) {
             this.dateSelector.getSelectionModel().select(this.lastDateSelected);
-        } else if (!this.controller.getUpdateAfterIncrement()) {
+        } else if (!this.controller.isPrecedentOperationIsCounter()) {
             this.lastDateSelected = "";
             this.dateLabel.setText(DATE_LABEL_TEXT);
         }

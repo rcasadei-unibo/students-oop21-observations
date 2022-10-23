@@ -56,6 +56,9 @@ public class MomentsInsertionPopup extends Stage {
         this.setScene(scene);
     }
 
+    /**
+     * Update the selector with an updated list of moments.
+     */
     public void updateObservationSelector() {
         this.momentSelector.getItems().clear();
         this.momentSelector.getItems().addAll(this.controller.getMomentList());

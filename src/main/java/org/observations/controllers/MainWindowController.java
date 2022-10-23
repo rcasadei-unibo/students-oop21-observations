@@ -262,6 +262,9 @@ public class MainWindowController {
         return Collections.unmodifiableMap(data);
     }
 
+    /**
+     * Create (or substitute if already present) a pdf file containing all the saved data of students, their moments, dates and observations
+     */
     public void exportPdf(){
         PdfExporter pdfExporter = new PdfExporter();
         pdfExporter.exportPdf(this.getAllData());

@@ -38,6 +38,11 @@ public class MomentsView implements View<List<String>> {
         this.view.setBottom(bottomBox);
     }
 
+    /**
+     * Update the view with the new input.
+     *
+     * @param input value tho be inputted.
+     */
     public void update(List<String> input) {
         if (!input.isEmpty()) {
             VBox listBox = new VBox();
@@ -54,14 +59,27 @@ public class MomentsView implements View<List<String>> {
         }
     }
 
+    /**
+     * Returns the view root node.
+     *
+     * @return node of root.
+     */
     public Node getView() {
         return this.view;
     }
 
+    /**
+     * Show/hide the view.
+     *
+     * @param value
+     */
     public void setVisible(Boolean value) {
         this.view.setVisible(value);
     }
 
+    /**
+     * Update the popup selector
+     */
     public void updateObservationSelectorList() {
         this.popup.updateObservationSelector();
     }

@@ -6,6 +6,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import org.observations.controllers.ObservationsViewController;
 
+/**
+ * Simple container for the observation name its counter
+ * and a button to increment the said counter
+ */
 public class ObservationLine extends HBox implements View<Integer> {
 
     final Integer SPACING = 5;
@@ -32,21 +36,38 @@ public class ObservationLine extends HBox implements View<Integer> {
         });
     }
 
+    /**
+     * Update the view with the new input.
+     *
+     * @param input value tho be inputted.
+     */
     public void update(Integer input) {
         this.observations.setText(input.toString());
     }
 
+    /**
+     * Returns the view root node.
+     *
+     * @return node of root.
+     */
     public Node getView() {
         return this;
     }
 
+    /**
+     * Show/hide the view.
+     *
+     * @param value
+     */
     public void setVisible(Boolean value) {
     }
 
+    //call controller to increment the counter
     private void incrementObservation() {
         controller.updateObservationsCount(this.date, this.activity.getText(), true);
     }
 
+    //call the controller to decrement the counter
     private void reduceObservations() {
         controller.updateObservationsCount(this.date, this.activity.getText(), false);
     }

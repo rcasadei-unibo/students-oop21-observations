@@ -15,7 +15,7 @@ public class ObservationsViewController implements SubController<String, Map<Str
 
 
 
-    private Boolean updateAfterIncrement = false;
+    private Boolean precedentOperationIsCounter = false;
 
 
     public ObservationsViewController(MainWindowController mainWindowController, List<String> observationTypesList) {
@@ -44,27 +44,54 @@ public class ObservationsViewController implements SubController<String, Map<Str
         this.parentController.incrementObservationCount(input.get(0), input.get(1));
     }
 
+    /**
+     * Calls the parent controller to increment counter of an observation done at a given date.
+     *
+     * @param date date of observation
+     * @param activity name of observation
+     * @param isIncrement
+     */
     public void updateObservationsCount(String date, String activity, Boolean isIncrement) {
         if(isIncrement){
-            this.updateAfterIncrement = true;
+            this.precedentOperationIsCounter = true;
             this.parentController.incrementObservationCount(date, activity);
         } else {
             this.parentController.decrementObservationCount(date, activity);
         }
     }
 
-    public Boolean getUpdateAfterIncrement() {
-        return updateAfterIncrement;
+    /**
+     * Return true or false if precedent operation was an incremental or decremental operation
+     *
+     * @return true if the precedent operation was an incremental or decremental operation
+     */
+    public Boolean isPrecedentOperationIsCounter() {
+        return precedentOperationIsCounter;
     }
 
-    public void setUpdateAfterIncrement(Boolean updateAfterIncrement) {
-        this.updateAfterIncrement = updateAfterIncrement;
+    /**
+     * Set precedentOperationIsCounter true or false.
+     *
+     * @param value
+     */
+    public void setPrecedentOperationIsCounter(Boolean value) {
+        this.precedentOperationIsCounter = value;
     }
 
+    /**
+     * Get current temporal list of name of observations types.
+     *
+     * @return list of types.
+     */
     public List<String> getObservationsTypesNames() {
         return this.observationTypes;
     }
 
+    /**
+     * Call parent controller to insert a new type of observation.
+     *
+     * @param typeName name of type.
+     */
     public void insertNewObservationType(String typeName){
         this.observationTypes = this.parentController.insertNewObservationType(typeName);
     }

@@ -62,6 +62,9 @@ public class ObservationInsertionPopup extends Stage {
         this.setScene(scene);
     }
 
+    /**
+     * Update the selector with an updated list of observations.
+     */
     public void updateObservationSelector() {
         this.observationSelector.getItems().clear();
         this.observationSelector.getItems().addAll(this.controller.getObservationsTypesNames());
