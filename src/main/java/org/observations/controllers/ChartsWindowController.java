@@ -20,12 +20,17 @@ public class ChartsWindowController {
     private final ChartsWindow chartsWindow;
     private Map<String, Map<String, Map<String, Map<String, Integer>>>> data;
 
-
+    /**
+     * Initialize and control new charts window.
+     *
+     * @param controller the main controller.
+     * @param view the node of the main window.
+     */
     public ChartsWindowController(MainWindowController controller, Node view) {
         this.controller = controller;
-        this.chartsWindow = new ChartsWindow(this, controller.getStudentsList());
-        this.data = this.controller.getAllData();
-        this.updateChartsWindow();
+        chartsWindow = new ChartsWindow(this, controller.getStudentsList());
+        data = controller.getAllData();
+        updateChartsWindow();
     }
 
     /**
@@ -55,16 +60,16 @@ public class ChartsWindowController {
      * Prompt the controller to get new data.
      */
     public void updateChartsWindow() {
-        this.data = this.controller.getAllData();
-        this.chartsWindow.setStudentSelector(this.controller.getStudentsList());
-        this.chartsWindow.setMomentSelector(List.of());
+        data = controller.getAllData();
+        chartsWindow.setStudentSelector(controller.getStudentsList());
+        chartsWindow.setMomentSelector(List.of());
     }
 
     /**
      * Update the view with an updated chart
      */
     public void updateChart() {
-        this.setNewChart();
+        setNewChart();
     }
 
     /**
@@ -73,17 +78,17 @@ public class ChartsWindowController {
     private void setNewChart() {
 
         //if user hasn't selected a specific chart type yet then create a pie type chart.
-        if (this.chartsWindow.getSelectedChart().isPresent()) {
-            switch (this.chartsWindow.getSelectedChart().get()) {
+        if (chartsWindow.getSelectedChart().isPresent()) {
+            switch (chartsWindow.getSelectedChart().get()) {
                 case "Torta":
-                    this.setChartToPie();
+                    setChartToPie();
                     break;
                 case "Barre":
-                    this.setChartToBar();
+                    setChartToBar();
                     break;
             }
         } else {
-            this.setChartToPie();
+            setChartToPie();
         }
     }
 
@@ -91,12 +96,12 @@ public class ChartsWindowController {
      * Create and pass a new pie chart to the view to substitute the old one.
      */
     private void setChartToPie() {
-        this.chartsWindow.setChart(
+        chartsWindow.setChart(
                 ChartFactory.createPieChart(
                         ChartDataFilter.getPieData(
-                                this.data,
-                                this.chartsWindow.getSelectedStudent(),
-                                this.chartsWindow.getSelectedMoment()
+                                data,
+                                chartsWindow.getSelectedStudent(),
+                                chartsWindow.getSelectedMoment()
                         )));
     }
 
@@ -104,12 +109,12 @@ public class ChartsWindowController {
      * Create and pass a new bar chart to the view to substitute the old one.
      */
     private void setChartToBar() {
-        this.chartsWindow.setChart(
+        chartsWindow.setChart(
                 ChartFactory.createBarChart(
                         ChartDataFilter.getBarData(
-                                this.data,
-                                this.chartsWindow.getSelectedStudent(),
-                                this.chartsWindow.getSelectedMoment()
+                                data,
+                                chartsWindow.getSelectedStudent(),
+                                chartsWindow.getSelectedMoment()
                         )));
     }
 
@@ -120,8 +125,8 @@ public class ChartsWindowController {
      */
     public void updateMomentSelector(Optional<String> student) {
         student.ifPresent(s -> {
-            if(this.data.containsKey(s)){
-                this.chartsWindow.setMomentSelector(new ArrayList<>(this.data.get(s).keySet()));
+            if(data.containsKey(s)){
+                chartsWindow.setMomentSelector(new ArrayList<>(data.get(s).keySet()));
             }
         });
     }
@@ -132,6 +137,6 @@ public class ChartsWindowController {
      * @return Window of the controlled view.
      */
     public Window getMainWindow() {
-        return this.controller.getView().getScene().getWindow();
+        return controller.getView().getScene().getWindow();
     }
 }

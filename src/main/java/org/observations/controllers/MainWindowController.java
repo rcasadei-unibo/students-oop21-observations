@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Main controller which manage the main window and all the subcontrollers attached
+ * Main controller which manage the main window and all the SubControllers attached
  * and act as mediator between controllers classes and model classes.
  */
 public class MainWindowController {
@@ -27,27 +27,31 @@ public class MainWindowController {
     private String lastStudentSelected = "";
     private String lastMomentSelected = "";
 
+    /**
+     * Initialize the main window.
+     */
     public MainWindowController() {
 
         List<String> momentsList;
         List<String> observationTypesList;
         try {
-            this.adapter = new ModelAdapterImpl();
+            adapter = new ModelAdapterImpl();
             momentsList = adapter.getMomentsListFromFile();
             observationTypesList = adapter.getTypesListFromFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        this.studentsViewController = new StudentsViewController(this);
-        this.momentsViewController = new MomentsViewController(this, momentsList);
-        this.observationsViewController = new ObservationsViewController(this, observationTypesList);
+        studentsViewController = new StudentsViewController(this);
+        momentsViewController = new MomentsViewController(this, momentsList);
+        observationsViewController = new ObservationsViewController(this, observationTypesList);
 
-        this.momentsViewController.setViewVisible(false);
-        this.observationsViewController.setViewVisible(false);
+        momentsViewController.setViewVisible(false);
+        observationsViewController.setViewVisible(false);
 
-        this.updateStudentsPanel();
-        this.view = new MainWindowView(this, this.studentsViewController.getView(), this.momentsViewController.getView(), this.observationsViewController.getView());
+        //initialize the student list with a list of students saved on local (if present).
+        updateStudentsPanel();
+        view = new MainWindowView(this, studentsViewController.getView(), momentsViewController.getView(), observationsViewController.getView());
     }
 
     /**
@@ -55,14 +59,14 @@ public class MainWindowController {
      */
     public void initializeChartsWindowController() {
         if (chartsWindowController == null) {
-            this.chartsWindowController = new ChartsWindowController(this, this.view.getView());
+            chartsWindowController = new ChartsWindowController(this, view.getView());
         }
     }
 
     /**
      * Get main window node.
      *
-     * @return
+     * @return a node containing the MainWindowView.
      */
     public Node getView() {
         return view.getView();
@@ -75,7 +79,7 @@ public class MainWindowController {
      */
     public List<String> getStudentsList() {
         try {
-            return this.adapter.getStudentsList();
+            return adapter.getStudentsList();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -92,7 +96,7 @@ public class MainWindowController {
             return List.of();
         }
         try {
-            return this.adapter.getMomentsList(student);
+            return adapter.getMomentsList(student);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -102,14 +106,14 @@ public class MainWindowController {
      * Get a map of all dates, with all the observations and relative count, of a given moment.
      *
      * @param moment the moment at which observations are related to.
-     * @return a map of every date and all observations of that given date.
+     * @return a map of every date, each date having a map observations and their relative counters.
      */
     public Map<String, Map<String, Integer>> getDateAndObservationsList(String moment) {
         if (moment.isEmpty()) {
             return Map.of();
         }
         try {
-            return this.adapter.getDatesAndObservations(moment);
+            return adapter.getDatesAndObservations(moment);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -119,7 +123,7 @@ public class MainWindowController {
      * Update the student view with a new list of all the students.
      */
     private void updateStudentsPanel() {
-        studentsViewController.updateView(this.getStudentsList());
+        studentsViewController.updateView(getStudentsList());
     }
 
     /**
@@ -128,12 +132,12 @@ public class MainWindowController {
      * @param student name of student to search moments of.
      */
     void updateMomentsPanel(String student) {
-        this.lastStudentSelected = student;
-        this.view.clearTextSelectedMoment();
-        this.view.setTextSelectedStudent(student);
-        this.momentsViewController.updateView(this.getMomentList(student));
-        this.momentsViewController.setViewVisible(true);
-        this.observationsViewController.setViewVisible(false);
+        lastStudentSelected = student;
+        view.clearTextSelectedMoment();
+        view.setTextSelectedStudent(student);
+        momentsViewController.updateView(getMomentList(student));
+        momentsViewController.setViewVisible(true);
+        observationsViewController.setViewVisible(false);
     }
 
     /**
@@ -142,49 +146,39 @@ public class MainWindowController {
      * @param moment moment to search observations of.
      */
     void updateObservationsPanel(String moment) {
-        this.lastMomentSelected = moment;
-        this.view.setTextSelectedMoment(moment);
-        this.observationsViewController.updateView(this.getDateAndObservationsList(moment));
-        this.observationsViewController.setViewVisible(true);
+        lastMomentSelected = moment;
+        view.setTextSelectedMoment(moment);
+        observationsViewController.updateView(getDateAndObservationsList(moment));
+        observationsViewController.setViewVisible(true);
     }
 
     /**
      * Create observation if missing or increment the count of a given observation.
      *
-     * @param date            dd-mm-yyyy format.
+     * @param date            a date of dd-mm-yyyy format.
      * @param observationType name of observation.
      */
     void incrementObservationCount(String date, String observationType) {
         try {
             adapter.createDate(date);
             adapter.clickObservation(observationType);
-            this.updateObservationsPanel(this.lastMomentSelected);
-            this.chartsWindowController.updateChartsWindow();
+            updateObservationsPanel(lastMomentSelected);
+            chartsWindowController.updateChartsWindow();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * Decrement the count of a given observation.
-     *
-     * @param observationType name of observation.
-     * @param activity
-     */
-    void decrementObservationCount(String observationType, String activity) {
-
-    }
-
-    /**
-     * Insert a new student
+     * Insert a new student and refresh the student view.
      *
      * @param student full name of student
      */
     public void insertNewStudent(String student) {
         try {
             adapter.createStudent(student);
-            this.updateStudentsPanel();
-            this.chartsWindowController.updateChartsWindow();
+            updateStudentsPanel();
+            chartsWindowController.updateChartsWindow();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -192,16 +186,17 @@ public class MainWindowController {
 
     /**
      * Insert a new moment or create a new one if it doesn't exist.
+     * It also adds it to the last selected student's list of moments. 
      *
      * @param moment name of moment.
      */
     public List<String> insertNewMoment(String moment) {
         try {
-            this.adapter.createMoment(moment);
-            this.updateMomentsPanel(this.lastStudentSelected);
-            this.observationsViewController.setViewVisible(false);
-            this.chartsWindowController.updateChartsWindow();
-            return this.adapter.getMomentsListFromFile();
+            adapter.createMoment(moment);
+            updateMomentsPanel(lastStudentSelected);
+            observationsViewController.setViewVisible(false);
+            chartsWindowController.updateChartsWindow();
+            return adapter.getMomentsListFromFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -226,16 +221,18 @@ public class MainWindowController {
      */
     public void showChartsWindow() {
         if (!chartsWindowController.isShowing()) {
-            this.chartsWindowController.showWindow();
+            view.setShowChartsButtonTextToHide();
+            chartsWindowController.showWindow();
         } else {
-            this.chartsWindowController.hideWindow();
+            view.setShowChartsButtonTextToShow();
+            chartsWindowController.hideWindow();
         }
     }
 
     /**
      * Get all the student with relative moments, dates, observations and observations' count.
      *
-     * @return map of all data.
+     * @return a map containing all students, a map of their saved moments, each containing a map of saved dates, every date having a map of observations and relative counters.
      */
     public Map<String, Map<String, Map<String, Map<String, Integer>>>> getAllData() {
         Map<String, Map<String, Map<String, Map<String, Integer>>>> data = new HashMap<>();
@@ -252,8 +249,8 @@ public class MainWindowController {
             }
 
             //Necessary to not brick model.saved class
-            this.getMomentList(this.lastStudentSelected);
-            this.getDateAndObservationsList(this.lastMomentSelected);
+            getMomentList(lastStudentSelected);
+            getDateAndObservationsList(lastMomentSelected);
             //
 
         } catch (IOException e) {
@@ -265,8 +262,8 @@ public class MainWindowController {
     /**
      * Create (or substitute if already present) a pdf file containing all the saved data of students, their moments, dates and observations
      */
-    public void exportPdf(){
+    public void exportPdf() {
         PdfExporter pdfExporter = new PdfExporter();
-        pdfExporter.exportPdf(this.getAllData());
+        pdfExporter.exportPdf(getAllData());
     }
 }

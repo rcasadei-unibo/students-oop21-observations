@@ -3,7 +3,7 @@ package org.observations.gui;
 import javafx.scene.Node;
 
 /**
- * Simple view
+ * Interface class for views
  *
  * @param <I> Parameter required to update the view
  */

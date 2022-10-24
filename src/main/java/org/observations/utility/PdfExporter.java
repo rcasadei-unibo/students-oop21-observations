@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Class with a single method to export all locally saved data of students, moments, dates and observations into a legible pdf file.
+ */
 public class PdfExporter {
 
     private static final String SEP = File.separator;
@@ -47,10 +50,13 @@ public class PdfExporter {
     private PDPageContentStream stream;
     private Integer currentLineYValue;
 
+    /**
+     * Initialize the class and creates an empty document.
+     */
     public PdfExporter() {
         try {
-            this.document = new PDDocument();
-            this.setNewPage();
+            document = new PDDocument();
+            setNewPage();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -59,99 +65,145 @@ public class PdfExporter {
     /**
      * Export all data saved into a user legible pdf file.
      *
-     * @param data map containing all data.
+     * @param data map containing all students, a map of their saved moments, each containing a map of saved dates, every date having a map of observations and relative counters.
      */
     public void exportPdf(Map<String, Map<String, Map<String, Map<String, Integer>>>> data) {
         try {
-            this.addSingleLineText("Observations", MAIN_TITLE_X_OFFSET, this.currentLineYValue, MAIN_TITLE_TEXT_FONT, MAIN_TITLE_TEXT_SIZE);
-            this.addSingleLineText(this.createSubTitle(), SUB_TITLE_X_OFFSET, this.currentLineYValue, SUB_TITLE_TEXT_FONT, SUB_TITLE_TEXT_SIZE);
+            addSingleLineText("Observations", MAIN_TITLE_X_OFFSET, currentLineYValue, MAIN_TITLE_TEXT_FONT, MAIN_TITLE_TEXT_SIZE);
+            addSingleLineText(createSubTitle(), SUB_TITLE_X_OFFSET, currentLineYValue, SUB_TITLE_TEXT_FONT, SUB_TITLE_TEXT_SIZE);
 
             for (String student : data.keySet().stream().sorted().collect(Collectors.toList())) {
-                this.addSingleLineText(" ", TEXT_X_OFFSET, this.currentLineYValue, MAIN_TITLE_TEXT_FONT, EMPTY_LINE_SIZE * 2);
-                this.addSingleLineText(student, TITLE_X_OFFSET, this.currentLineYValue, TITLE_TEXT_FONT, TITLE_TEXT_SIZE);
+                addSingleLineText(" ", TEXT_X_OFFSET, currentLineYValue, MAIN_TITLE_TEXT_FONT, EMPTY_LINE_SIZE * 2);
+                addSingleLineText(student, TITLE_X_OFFSET, currentLineYValue, TITLE_TEXT_FONT, TITLE_TEXT_SIZE);
 
                 for (String moment : data.get(student).keySet().stream().sorted().collect(Collectors.toList())) {
-                    this.addSingleLineText(" ", TEXT_X_OFFSET, this.currentLineYValue, MAIN_TITLE_TEXT_FONT, EMPTY_LINE_SIZE);
-                    this.addSingleLineText(moment, SUB_TITLE_X_OFFSET, this.currentLineYValue, TEXT_FONT, TEXT_SIZE);
+                    addSingleLineText(" ", TEXT_X_OFFSET, currentLineYValue, MAIN_TITLE_TEXT_FONT, EMPTY_LINE_SIZE);
+                    addSingleLineText(moment, SUB_TITLE_X_OFFSET, currentLineYValue, TEXT_FONT, TEXT_SIZE);
 
                     for (String date : data.get(student).get(moment).keySet().stream().sorted(new DateComparator()).collect(Collectors.toList())) {
-                        this.addSingleLineText(" ", TEXT_X_OFFSET, this.currentLineYValue, MAIN_TITLE_TEXT_FONT, EMPTY_LINE_SIZE);
-                        this.addSingleLineText(date, SUB_TITLE_X_OFFSET, this.currentLineYValue, TEXT_FONT, TEXT_SIZE);
+                        addSingleLineText(" ", TEXT_X_OFFSET, currentLineYValue, MAIN_TITLE_TEXT_FONT, EMPTY_LINE_SIZE);
+                        addSingleLineText(date, SUB_TITLE_X_OFFSET, currentLineYValue, TEXT_FONT, TEXT_SIZE);
 
                         List<String> observationsList = new ArrayList<>();
 
                         for (String observation : data.get(student).get(moment).get(date).keySet().stream().sorted().collect(Collectors.toList())) {
                             observationsList.add(observation + ": " + data.get(student).get(moment).get(date).get(observation));
                         }
-                        this.addMultiLineText(observationsList, LEADING, TEXT_X_OFFSET, this.currentLineYValue, TEXT_FONT, TEXT_SIZE);
+                        addMultiLineText(observationsList, LEADING, TEXT_X_OFFSET, currentLineYValue, TEXT_FONT, TEXT_SIZE);
                     }
                 }
             }
 
-            this.stream.close();
-            this.document.save(EXPORT_PATH + PDF_NAME);
-            this.document.close();
+            stream.close();
+            document.save(EXPORT_PATH + PDF_NAME);
+            document.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * Create a string containing the date of creation.
+     *
+     * @return a string.
+     */
     private String createSubTitle() {
         String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         String time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         return "PDF creato il " + date + " " + time;
     }
 
+    /**
+     * Add a single line of text to the current document and page.
+     *
+     * @param text      string of text to add.
+     * @param xPosition horizontal position on page.
+     * @param yPosition vertical position on page.
+     * @param font      type of font.
+     * @param fontSize  font size.
+     * @throws IOException
+     */
     private void addSingleLineText(String text, int xPosition, int yPosition, PDFont font, float fontSize) throws IOException {
-        if (this.isEndOfPage(fontSize)) {
-            this.stream.close();
-            this.setNewPage();
-            yPosition = this.currentLineYValue;
+        if (isEndOfPage(fontSize)) {
+            stream.close();
+            setNewPage();
+            yPosition = currentLineYValue;
         }
-        this.stream.beginText();
-        this.stream.setFont(font, fontSize);
-        this.stream.newLineAtOffset(xPosition, yPosition);
-        this.stream.showText(text);
-        this.currentLineYValue -= (int) fontSize;
-        this.stream.endText();
-        this.stream.moveTo(0, 0);
+        stream.beginText();
+        stream.setFont(font, fontSize);
+        stream.newLineAtOffset(xPosition, yPosition);
+        stream.showText(text);
+        currentLineYValue -= (int) fontSize;
+        stream.endText();
+        stream.moveTo(0, 0);
     }
 
+    /**
+     * Add multiple lines of text to the current document and page.
+     *
+     * @param textList  list of strings to add.
+     * @param leading   the leading of the text.
+     * @param xPosition horizontal position on page.
+     * @param yPosition vertical position on page.
+     * @param font      type of font.
+     * @param fontSize  font size.
+     * @throws IOException
+     */
     private void addMultiLineText(List<String> textList, float leading, int xPosition, int yPosition, PDFont font, float fontSize) throws IOException {
-        this.stream.beginText();
-        this.stream.setFont(font, fontSize);
-        this.stream.setLeading(leading);
-        this.stream.newLineAtOffset(xPosition, yPosition);
+        stream.beginText();
+        stream.setFont(font, fontSize);
+        stream.setLeading(leading);
+        stream.newLineAtOffset(xPosition, yPosition);
         for (String textLine : textList) {
-            if (this.isEndOfPage(fontSize)) {
-                this.stream.endText();
-                this.stream.close();
-                this.setNewPage();
-                this.stream.beginText();
-                this.stream.setFont(font, fontSize);
-                this.stream.setLeading(leading);
-                this.stream.newLineAtOffset(xPosition, this.currentLineYValue);
+            if (isEndOfPage(fontSize)) {
+                stream.endText();
+                stream.close();
+                setNewPage();
+                stream.beginText();
+                stream.setFont(font, fontSize);
+                stream.setLeading(leading);
+                stream.newLineAtOffset(xPosition, currentLineYValue);
             }
-            this.stream.showText(textLine);
-            this.stream.newLine();
-            this.currentLineYValue -= (int) leading;
+            stream.showText(textLine);
+            stream.newLine();
+            currentLineYValue -= (int) leading;
         }
-        this.stream.endText();
-        this.stream.moveTo(0, 0);
+        stream.endText();
+        stream.moveTo(0, 0);
     }
 
+    /**
+     * Calculate the horizontal space taken by a specific combination of string, font and font size.
+     *
+     * @param text     string of text.
+     * @param font     type of font.
+     * @param fontSize size of font.
+     * @return a float number the length for the given text, font and font size combination.
+     * @throws IOException if font.getStringWidth() throw IOException.
+     */
     private float getTextWidth(String text, PDFont font, float fontSize) throws IOException {
         return font.getStringWidth(text) / 1000 * fontSize;
     }
 
+    /**
+     * Set a new page for the current document.
+     *
+     * @throws IOException if document.addPage() or new PDPageContentStream() have thrown an IOException.
+     */
     private void setNewPage() throws IOException {
         PDPage page = new PDPage(PDRectangle.A4);
-        this.document.addPage(page);
-        this.stream = new PDPageContentStream(this.document, page);
+        document.addPage(page);
+        stream = new PDPageContentStream(document, page);
         Integer pageHeight = (int) page.getTrimBox().getHeight();
-        this.currentLineYValue = pageHeight - PAGE_START_OFFSET;
+        currentLineYValue = pageHeight - PAGE_START_OFFSET;
     }
 
+    /**
+     * Valuates if the current y offset has reached the bottom of the page.
+     *
+     * @param offset additional offset regarding the height of a text line to evaluate if there still space fo a new line.
+     * @return return true if has been reached the bottom of page, false if not.
+     */
     private boolean isEndOfPage(float offset) {
         return currentLineYValue - offset < 0;
     }

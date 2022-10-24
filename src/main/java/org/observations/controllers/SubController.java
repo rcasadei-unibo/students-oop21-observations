@@ -3,7 +3,7 @@ package org.observations.controllers;
 import javafx.scene.Node;
 
 /**
- * SubControlled which create and control a View
+ * Simple SubControlled interface for creating and controlling a View
  *
  * @param <M> Model data type required bi controller
  * @param <I> Type of input required by View

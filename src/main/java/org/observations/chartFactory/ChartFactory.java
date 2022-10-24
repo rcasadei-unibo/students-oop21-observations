@@ -4,6 +4,9 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.*;
 
+/**
+ * Simple factory class which creates instances of PieCharts or BarCharts.
+ */
 public abstract class ChartFactory {
 
     /**

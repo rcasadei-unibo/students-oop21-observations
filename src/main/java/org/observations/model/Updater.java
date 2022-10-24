@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Updater class for all string passed, create and manage all file in all class.
  * Remember the last hit (student, moment, date) passed for save and manage data.
- * Use @link {ArrayList<>}
+ * Use @link {ArrayList}
  */
 public interface Updater {
 

@@ -28,10 +28,16 @@ public class ChartsWindow extends Stage {
     private final ComboBox<String> momentSelector = new ComboBox<>();
     private final Button refreshButton = new Button("Aggiorna grafico");
 
+    /**
+     * Creates a new view for the charts window.
+     *
+     * @param controller the charts window controller.
+     * @param studentList a list containing the names of students.
+     */
     public ChartsWindow(ChartsWindowController controller, List<String> studentList) {
         this.controller = controller;
-        this.initOwner(controller.getMainWindow());
-        this.view.setTop(new HBox(
+        initOwner(controller.getMainWindow());
+        view.setTop(new HBox(
                 new Label("Grafico:"),
                 chartSelector,
                 new Label("Studente:"),
@@ -39,23 +45,23 @@ public class ChartsWindow extends Stage {
                 new Label("Momento:"),
                 momentSelector
         ));
-        this.view.setBottom(refreshButton);
+        view.setBottom(refreshButton);
 
-        this.chartSelector.getItems().addAll(CHARTS_TYPES);
-        this.studentSelector.getItems().addAll(studentList);
-        this.momentSelector.getItems().add("Tutti");
+        chartSelector.getItems().addAll(CHARTS_TYPES);
+        studentSelector.getItems().addAll(studentList);
+        momentSelector.getItems().add("Tutti");
 
-        this.studentSelector.valueProperty().addListener((observable, oldValue, newValue) -> {
-            this.controller.updateMomentSelector(Optional.ofNullable(this.studentSelector.getSelectionModel().getSelectedItem()));
-            this.controller.updateChart();
+        studentSelector.valueProperty().addListener((observable, oldValue, newValue) -> {
+            controller.updateMomentSelector(Optional.ofNullable(studentSelector.getSelectionModel().getSelectedItem()));
+            controller.updateChart();
         });
 
-        this.momentSelector.valueProperty().addListener((observable, oldValue, newValue) -> this.controller.updateChart());
+        momentSelector.valueProperty().addListener((observable, oldValue, newValue) -> controller.updateChart());
 
-        this.chartSelector.valueProperty().addListener((observable, oldValue, newValue) -> this.controller.updateChart());
+        chartSelector.valueProperty().addListener((observable, oldValue, newValue) -> controller.updateChart());
 
-        this.refreshButton.setOnAction(event -> this.controller.updateChart());
-        this.setScene(new Scene(this.view, 500, 400));
+        refreshButton.setOnAction(event -> controller.updateChart());
+        setScene(new Scene(view, 500, 400));
     }
 
     /**
@@ -64,8 +70,8 @@ public class ChartsWindow extends Stage {
      * @param studentList list of students
      */
     public void setStudentSelector(List<String> studentList) {
-        this.studentSelector.getItems().clear();
-        this.studentSelector.getItems().addAll(studentList);
+        studentSelector.getItems().clear();
+        studentSelector.getItems().addAll(studentList);
     }
 
     /**
@@ -74,45 +80,45 @@ public class ChartsWindow extends Stage {
      * @param momentList list of moments
      */
     public void setMomentSelector(List<String> momentList) {
-        this.momentSelector.getItems().clear();
-        this.momentSelector.getItems().addAll("Tutti");
-        this.momentSelector.getItems().addAll(momentList);
+        momentSelector.getItems().clear();
+        momentSelector.getItems().addAll("Tutti");
+        momentSelector.getItems().addAll(momentList);
     }
 
     /**
      * Return an optional of selected chart
      *
-     * @return
+     * @return an optional string containing a chart type name.
      */
     public Optional<String> getSelectedChart() {
-        return Optional.ofNullable(this.chartSelector.getSelectionModel().getSelectedItem());
+        return Optional.ofNullable(chartSelector.getSelectionModel().getSelectedItem());
     }
 
     /**
-     * Return an optional of selected student
+     * Return an optional of selected student.
      *
-     * @return
+     * @return an optional string containing a student name.
      */
     public Optional<String> getSelectedStudent() {
-        return Optional.ofNullable(this.studentSelector.getSelectionModel().getSelectedItem());
+        return Optional.ofNullable(studentSelector.getSelectionModel().getSelectedItem());
     }
 
     /**
      * Return an optional selected moment.
      *
-     * @return the moment selected.
+     * @return an optional string containing a moment name.
      */
     public Optional<String> getSelectedMoment() {
-        return Optional.ofNullable(this.momentSelector.getSelectionModel().getSelectedItem());
+        return Optional.ofNullable(momentSelector.getSelectionModel().getSelectedItem());
     }
 
     /**
      * Set new chart for the view.
      *
-     * @param chart
+     * @param chart chart to set.
      */
     public void setChart(Chart chart) {
         this.chart = chart;
-        this.view.setCenter(chart);
+        view.setCenter(chart);
     }
 }

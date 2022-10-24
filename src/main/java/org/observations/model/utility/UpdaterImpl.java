@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Updater class for all string passed, create and manage all file in all class.
  * Remember the last hit (student, moment, date) passed for save and manage data.
- * Use @link {ArrayList<>}
+ * Use @link {ArrayList}
  */
 public class UpdaterImpl implements Updater {
 
@@ -47,8 +47,7 @@ public class UpdaterImpl implements Updater {
    *      save: reference to class for create new folder
    *      loader: reference to class for load file
    */
-  public void chooseStudent(final String student, final Saved save, final Loader loader)
-      throws IOException {
+  public void chooseStudent(final String student, final Saved save, final Loader loader) {
     final String studentChoose = this.studentRoot + student + this.sep;
     this.reset();
     if (!loader.loadFileFolder(this.studentRoot).contains(student)) {

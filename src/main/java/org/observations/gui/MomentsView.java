@@ -14,6 +14,9 @@ import org.observations.gui.popup.MomentsTypeInsertionPopup;
 
 import java.util.List;
 
+/**
+ * View class which create and updates a scrollable button list of moments.
+ */
 public class MomentsView implements View<List<String>> {
 
     private static final String LABEL_TEXT = "Momenti";
@@ -28,20 +31,25 @@ public class MomentsView implements View<List<String>> {
     private MomentsInsertionPopup popup;
     private MomentsTypeInsertionPopup typePopup;
 
+    /**
+     * Initialize a new moments view.
+     *
+     * @param controller the view controller.
+     */
     public MomentsView(MomentsViewController controller) {
         this.controller = controller;
-        this.view.setMinWidth(100);
-        this.createTypeInsertButton();
-        this.createInsertButton();
-        this.view.setTop(new Label(LABEL_TEXT));
-        this.view.setCenter(listPane);
-        this.view.setBottom(bottomBox);
+        view.setMinWidth(100);
+        createTypeInsertButton();
+        createInsertButton();
+        view.setTop(new Label(LABEL_TEXT));
+        view.setCenter(listPane);
+        view.setBottom(bottomBox);
     }
 
     /**
-     * Update the view with the new input.
+     * Update the view with the inputted list of moments.
      *
-     * @param input value tho be inputted.
+     * @param input list of moment.
      */
     public void update(List<String> input) {
         if (!input.isEmpty()) {
@@ -49,13 +57,13 @@ public class MomentsView implements View<List<String>> {
             listBox.setSpacing(8);
             input.forEach(hour -> {
                 Button button = new Button(hour);
-                button.setOnAction(event -> this.onMomentButtonClick(button.getText()));
+                button.setOnAction(event -> onMomentButtonClick(button.getText()));
                 listBox.getChildren().add(button);
             });
-            this.listPane.setContent(listBox);
-            this.view.setCenter(this.listPane);
+            listPane.setContent(listBox);
+            view.setCenter(listPane);
         } else {
-            this.view.setCenter(new Label(NO_DATA_FOUND_MESSAGE));
+            view.setCenter(new Label(NO_DATA_FOUND_MESSAGE));
         }
     }
 
@@ -65,58 +73,75 @@ public class MomentsView implements View<List<String>> {
      * @return node of root.
      */
     public Node getView() {
-        return this.view;
+        return view;
     }
 
     /**
      * Show/hide the view.
      */
     public void setVisible(Boolean value) {
-        this.view.setVisible(value);
+        view.setVisible(value);
     }
 
     /**
      * Update the popup selector
      */
     public void updateObservationSelectorList() {
-        if (this.popup != null) {
-            this.popup.updateObservationSelector();
+        if (popup != null) {
+            popup.updateObservationSelector();
         }
     }
 
+    /**
+     * Create an insert button, for inputting a new moment, on the user interface.
+     */
     private void createInsertButton() {
         Button insertButton = new Button(INSERT_BUTTON_TEXT);
-        insertButton.setOnAction(event -> this.onInsertButtonClick());
+        insertButton.setOnAction(event -> onInsertButtonClick());
         bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
         bottomBox.getChildren().add(insertButton);
     }
 
+    /**
+     * Create an insert button, for inputting a new type of moment, on the user interface.
+     */
     private void createTypeInsertButton() {
         Button insertButton = new Button(NEW_TYPE_BUTTON_TEXT);
-        insertButton.setOnAction(event -> this.onNewTypeButtonClick());
+        insertButton.setOnAction(event -> onNewTypeButtonClick());
         bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
         bottomBox.getChildren().add(insertButton);
     }
 
+    /**
+     * On the insert new type button click, initialize if not done already, and show on screen a popup for the user to insert a moment.
+     */
     private void onInsertButtonClick() {
-        if (this.popup == null) {
-            this.popup = new MomentsInsertionPopup(this.controller);
+        if (popup == null) {
+            popup = new MomentsInsertionPopup(controller);
         }
-        if (!this.popup.isShowing()) {
-            this.popup.show();
+        if (!popup.isShowing()) {
+            popup.show();
         }
     }
 
+    /**
+     * On the insert new type button click, initialize if not done already, and show on screen a popup for the user to insert a new type of moment.
+     */
     private void onNewTypeButtonClick() {
-        if (this.typePopup == null) {
-            this.typePopup = new MomentsTypeInsertionPopup(this.controller, this);
+        if (typePopup == null) {
+            typePopup = new MomentsTypeInsertionPopup(controller, this);
         }
-        if (!this.typePopup.isShowing()) {
-            this.typePopup.show();
+        if (!typePopup.isShowing()) {
+            typePopup.show();
         }
     }
 
+    /**
+     * On a moment button click notify controller of the action.
+     *
+     * @param text name of moment.
+     */
     private void onMomentButtonClick(final String text) {
-        this.controller.getData(text);
+        controller.getData(text);
     }
 }

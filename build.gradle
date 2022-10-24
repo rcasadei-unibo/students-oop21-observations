@@ -56,7 +56,7 @@ jlinkZip {
     group = 'distribution'
 }
 
-//current runnable jar not working for missing javafx modules
+//current runnable jar not working with current setup
 jar {
     manifest {
         attributes(

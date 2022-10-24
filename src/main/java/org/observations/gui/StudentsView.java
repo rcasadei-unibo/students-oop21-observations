@@ -13,6 +13,9 @@ import org.observations.gui.popup.StudentInsertionPopup;
 
 import java.util.List;
 
+/**
+ * View class which create and updates a scrollable button list of students.
+ */
 public class StudentsView implements View<List<String>> {
 
     private static final String LABEL_TEXT = "Studenti";
@@ -25,6 +28,11 @@ public class StudentsView implements View<List<String>> {
     private final HBox bottomBox = new HBox();
     private StudentInsertionPopup popup;
 
+    /**
+     * Initialize a new student view.
+     *
+     * @param controller the view controller.
+     */
     public StudentsView(StudentsViewController controller) {
         this.controller = controller;
         this.view.setMinWidth(150);
@@ -34,9 +42,9 @@ public class StudentsView implements View<List<String>> {
     }
 
     /**
-     * Update the view with the new input.
+     * Update the view with the inputted list of students.
      *
-     * @param input value tho be inputted.
+     * @param input list of students.
      */
     public void update(List<String> input) {
         if (!input.isEmpty()) {
@@ -65,13 +73,14 @@ public class StudentsView implements View<List<String>> {
 
     /**
      * Show/hide the view.
-     *
-     * @param value
      */
     public void setVisible(Boolean value) {
         view.setVisible(value);
     }
 
+    /**
+     * Create an insert button on the user interface.
+     */
     private void createInsertButton() {
         Button insertButton = new Button(INSERT_BUTTON_TEXT);
         insertButton.setOnAction(event -> this.onInsertButtonClick());
@@ -79,6 +88,9 @@ public class StudentsView implements View<List<String>> {
         bottomBox.getChildren().add(insertButton);
     }
 
+    /**
+     * On the insert button click, initialize if not done already, and show on screen a popup for the user to insert a new student.
+     */
     private void onInsertButtonClick() {
         if (this.popup == null) {
             this.popup = new StudentInsertionPopup(this.controller);
@@ -88,6 +100,11 @@ public class StudentsView implements View<List<String>> {
         }
     }
 
+    /**
+     * On a student button click notify controller of the action.
+     *
+     * @param text name of student.
+     */
     private void onStudentButtonClick(final String text) {
         controller.getData(text);
     }

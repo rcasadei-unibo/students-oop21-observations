@@ -9,19 +9,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Utility class used for filter data received and/or reorganize it in a compatible format for a PieChart or a BarChart.
+ */
 public class ChartDataFilter {
     private static final String ALL = "Tutti";
 
     /**
      * Return filtered data in an ObservableList containing PieChart.Data from raw data
      *
-     * @param data Map containing all or a single student and all their
-     *             relative moments and observations.
-     *@param student Name of student to search content of.
-     *@param moment Name of moment to search content of or to search
-     *              all moments available.
-     * @return An ObservableList<PieChart.Data> containing all the
-     * observations found and the relative number of observations
+     * @param data    Map containing all or a single student and all their
+     *                relative moments and observations.
+     * @param student Name of student to search content of.
+     * @param moment  Name of moment to search content of or to search
+     *                all moments available.
+     * @return an ObservableList of PieChart.Data containing all the observations found and the relative number of observations.
      */
     public static ObservableList<PieChart.Data> getPieData(
             Map<String, Map<String, Map<String, Map<String, Integer>>>> data,
@@ -48,13 +50,12 @@ public class ChartDataFilter {
     /**
      * Return filtered data in XYChart.Series from raw data
      *
-     * @param data Map containing all or a single student and all their
-     *             relative moments and observations.
+     * @param data    Map containing all or a single student and all their
+     *                relative moments and observations.
      * @param student Name of student to search content of.
-     * @param moment Name of moment to search content of or to search
-     *               all moments available.
-     * @return XYChart.Series<String, Number> Series containing all the
-     * observations found and the relative number of observations
+     * @param moment  Name of moment to search content of or to search
+     *                all moments available.
+     * @return an XYChart.Series containing all the observations found and the relative number of observations.
      */
     public static XYChart.Series<String, Number> getBarData(
             Map<String, Map<String, Map<String, Map<String, Integer>>>> data,
@@ -81,8 +82,8 @@ public class ChartDataFilter {
     /**
      * Search all the observations and their counts of a specific student
      *
-     * @param data Map containing all or a single student and all their
-     *             relative moments and observations.
+     * @param data          Map containing all or a single student and all their
+     *                      relative moments and observations.
      * @param studentFilter Student to search content of.
      * @return A map of all observations found and their counts.
      */
@@ -113,10 +114,10 @@ public class ChartDataFilter {
     /**
      * Search all the observations and their counts of a specific student
      *
-     * @param data Map containing all or a single student and all their
-     *             relative moments and observations.
+     * @param data          Map containing all or a single student and all their
+     *                      relative moments and observations.
      * @param studentFilter Student to search content of.
-     * @param momentFilter Moment to search content of.
+     * @param momentFilter  Moment to search content of.
      * @return A map of all observations found and their counts.
      */
     public static Map<String, Integer> filterDataByStudentAndMoment(

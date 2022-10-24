@@ -17,6 +17,9 @@ import org.observations.utility.DateComparator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * View class which create and updates a scrollable list of observations and their relative increment buttons.
+ */
 public class ObservationsView implements View<Map<String, Map<String, Integer>>> {
 
 
@@ -40,45 +43,53 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
     private Map<String, Map<String, Integer>> temporalData;
     private ObservationTypeInsertionPopup typePopup;
 
+    /**
+     * Initialize a new observations view.
+     *
+     * @param controller the view controller.
+     */
     public ObservationsView(ObservationsViewController controller) {
         this.controller = controller;
-        this.view.setMinWidth(150);
-        this.createNewTypeButton();
-        this.createInsertButton();
+        view.setMinWidth(150);
+        createNewTypeButton();
+        createInsertButton();
 
-        this.dateSelector.valueProperty().addListener((observable, oldValue, newValue) -> this.setDateSelector());
-        this.dateLabel.setText(DATE_LABEL_TEXT);
+        dateSelector.valueProperty().addListener((observable, oldValue, newValue) -> setDateSelector());
+        dateLabel.setText(DATE_LABEL_TEXT);
 
-        HBox topBox = new HBox(new Label(LABEL_TEXT), dateSelector, this.dateLabel);
+        HBox topBox = new HBox(new Label(LABEL_TEXT), dateSelector, dateLabel);
         topBox.setSpacing(TOP_BOX_SPACING);
-        this.view.setTop(topBox);
-        this.view.setBottom(bottomBox);
+        view.setTop(topBox);
+        view.setBottom(bottomBox);
     }
 
     /**
-     * Update the view with the new input.
+     * Update the view with the inputted list of dates and their relative observations and counters.
      *
      * @param input value tho be inputted.
      */
     public void update(Map<String, Map<String, Integer>> input) {
-        this.dateSelector.getItems().clear();
+        dateSelector.getItems().clear();
         if (!input.isEmpty()) {
-            this.temporalData = input;
-            this.dateSelector.getItems().addAll(
-                    this.temporalData.keySet().stream()
+            temporalData = input;
+            dateSelector.getItems().addAll(
+                    temporalData.keySet().stream()
                             .sorted(new DateComparator())
                             .collect(Collectors.toUnmodifiableList()));
 
-            if (this.lastDateSelected != null && !lastDateSelected.isEmpty()) {
-                if (this.controller.isPrecedentOperationIsCounter()) {
-                    this.controller.setPrecedentOperationIsCounter(false);
+            //If a date has precedently selected update the scroll list with the said date.
+            //Otherwise, prompt the user to select a date.
+            if (!lastDateSelected.isEmpty()) {
+                //If there has been an increment
+                if (controller.isPrecedentOperationIsCounter()) {
+                    controller.setPrecedentOperationIsCounter(false);
                 }
-                this.setListPane(this.lastDateSelected);
+                setListPane(lastDateSelected);
             } else {
-                this.view.setCenter(new Label(DATE_SELECTION_MESSAGE));
+                view.setCenter(new Label(DATE_SELECTION_MESSAGE));
             }
         } else {
-            this.view.setCenter(new Label(NO_DATA_FOUND_MESSAGE));
+            view.setCenter(new Label(NO_DATA_FOUND_MESSAGE));
         }
     }
 
@@ -88,123 +99,164 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
      * @return node of root.
      */
     public Node getView() {
-        return this.view;
+        return view;
     }
 
     /**
      * Show/hide the view.
      */
     public void setVisible(Boolean value) {
-        this.view.setVisible(value);
+        view.setVisible(value);
     }
 
     /**
-     * Update the popup selector
+     * Calls the popup to update its list of dates with a new set of dates from the view controller.
      */
     public void updateObservationSelectorList() {
-        if (this.popup != null) {
-            this.popup.updateObservationSelector();
+        if (popup != null) {
+            popup.updateObservationSelector();
         }
     }
 
+    /**
+     * Manages the current selected date for the selected moment.
+     * If the user select a date it gets temporally saved, so it doesn't have to reselect the date after incrementing od decrementing an observation.
+     * If the user select a new moment the date gets deleted.
+     */
     private void setDateSelector() {
         if (!dateSelector.getSelectionModel().isEmpty()) {
             String date = dateSelector.getSelectionModel().getSelectedItem();
-            this.lastDateSelected = date;
-            this.dateLabel.setText(DATE_LABEL_TEXT + " " + date);
-            this.setListPane(date);
-        } else if (dateSelector.getItems().contains(this.lastDateSelected)) {
-            this.dateSelector.getSelectionModel().select(this.lastDateSelected);
-        } else if (!this.controller.isPrecedentOperationIsCounter()) {
-            this.lastDateSelected = "";
-            this.dateLabel.setText(DATE_LABEL_TEXT);
-        }
-    }
+            lastDateSelected = date;
+            dateLabel.setText(DATE_LABEL_TEXT + " " + date);
+            setListPane(date);
+        } else if (dateSelector.getItems().contains(lastDateSelected)) {
+            dateSelector.getSelectionModel().select(lastDateSelected);
 
-    private void setListPane(String date) {
-        if (date != null && !date.isEmpty() && this.temporalData.containsKey(date)) {
-            VBox listBox = new VBox();
-            listBox.setSpacing(LIST_BOX_SPACING);
-            for (String activity : this.temporalData.get(date).keySet()) {
-                Integer observations = this.temporalData.get(date).get(activity);
-                listBox.getChildren().add(new ObservationLine(this.controller, date, activity, observations).getView());
-            }
-            this.listPane.setContent(listBox);
-            this.view.setCenter(listPane);
-        }
-    }
-
-    private void createNewTypeButton() {
-        Button insertButton = new Button(NEW_TYPE_BUTTON_TEXT);
-        insertButton.setOnAction(event -> this.onNewTypeButtonClick());
-        bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
-        bottomBox.getChildren().add(insertButton);
-    }
-
-    private void createInsertButton() {
-        Button insertButton = new Button(INSERT_BUTTON_TEXT);
-        insertButton.setOnAction(event -> this.onInsertButtonClick());
-        bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
-        bottomBox.getChildren().add(insertButton);
-    }
-
-    private void onInsertButtonClick() {
-        if (this.popup == null) {
-            this.popup = new ObservationInsertionPopup(this.controller);
-        }
-        if (!this.popup.isShowing()) {
-            this.popup.show();
-        }
-    }
-
-    private void onNewTypeButtonClick() {
-        if (this.typePopup == null) {
-            this.typePopup = new ObservationTypeInsertionPopup(this.controller, this);
-        }
-        if (!this.typePopup.isShowing()) {
-            this.typePopup.show();
+            //Check done to make sure the saved date don't get deleted after an observation increment nut it does if user select a different moment
+        } else if (!controller.isPrecedentOperationIsCounter()) {
+            lastDateSelected = "";
+            dateLabel.setText(DATE_LABEL_TEXT);
         }
     }
 
     /**
-     * Simple container for the observation name its counter
-     * and a button to increment the said counter
+     * Reset the scrollable list with all the observation contained after the given date.
+     *
+     * @param date a date to which find observation of.
+     */
+    private void setListPane(String date) {
+        if (date != null && !date.isEmpty() && temporalData.containsKey(date)) {
+            VBox listBox = new VBox();
+            listBox.setSpacing(LIST_BOX_SPACING);
+            for (String activity : temporalData.get(date).keySet()) {
+                Integer observations = temporalData.get(date).get(activity);
+                listBox.getChildren().add(new ObservationLine(controller, date, activity, observations).getView());
+            }
+            listPane.setContent(listBox);
+            view.setCenter(listPane);
+        }
+    }
+
+    /**
+     * Create an insert button, for inputting a new type of observation, on the user interface.
+     */
+    private void createNewTypeButton() {
+        Button insertButton = new Button(NEW_TYPE_BUTTON_TEXT);
+        insertButton.setOnAction(event -> onNewTypeButtonClick());
+        bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
+        bottomBox.getChildren().add(insertButton);
+    }
+
+    /**
+     * Create an insert button, for inputting a new observation, on the user interface.
+     */
+    private void createInsertButton() {
+        Button insertButton = new Button(INSERT_BUTTON_TEXT);
+        insertButton.setOnAction(event -> onInsertButtonClick());
+        bottomBox.setAlignment(Pos.BOTTOM_RIGHT);
+        bottomBox.getChildren().add(insertButton);
+    }
+
+    /**
+     * On the insert new type button click, initialize if not done already, and show on screen a popup for the user to insert an observation and the date to where has to be saved.
+     */
+    private void onInsertButtonClick() {
+        if (popup == null) {
+            popup = new ObservationInsertionPopup(controller);
+        }
+        if (!popup.isShowing()) {
+            popup.show();
+        }
+    }
+
+    /**
+     * On the insert new type button click, initialize if not done already, and show on screen a popup for the user to insert a new type of observation.
+     */
+    private void onNewTypeButtonClick() {
+        if (typePopup == null) {
+            typePopup = new ObservationTypeInsertionPopup(controller, this);
+        }
+        if (!typePopup.isShowing()) {
+            typePopup.show();
+        }
+    }
+
+    /**
+     * Simple container for the observation name its counter and a button to increment the said counter.
      */
     private static class ObservationLine extends HBox {
 
         final Integer SPACING = 5;
         private final ObservationsViewController controller;
         private final String date;
-        private final Label activity;
-        private final Label observations;
+        private final Label observation;
+        private final Label counter;
 
-        public ObservationLine(ObservationsViewController controller, String date, String activity, Integer observations) {
+        /**
+         * Create a new HBox container containing a label and a button.
+         * It saves an observations, its counter and its date of insertion.
+         *
+         * @param controller the view controller.
+         * @param date the observation's date.
+         * @param observation the observation name.
+         * @param counter the observation's counter.
+         */
+        public ObservationLine(ObservationsViewController controller, String date, String observation, Integer counter) {
             this.controller = controller;
             this.date = date;
-            this.activity = new Label(activity);
-            this.observations = new Label(observations.toString());
+            this.observation = new Label(observation);
+            this.counter = new Label(counter.toString());
 
-            Button add = new Button("+");
+            Button incrementButton = new Button("+");
 
-            this.getChildren().addAll(this.activity, this.observations, add);
-            this.setSpacing(SPACING);
+            getChildren().addAll(this.observation, this.counter, incrementButton);
+            setSpacing(SPACING);
 
-            add.setOnAction(event -> {
+            incrementButton.setOnAction(event -> {
                 System.out.println("add observations button hit");
-                this.incrementObservation();
+                incrementObservation();
             });
         }
 
-        //call controller to increment the counter
+        /**
+         * Call the controller to increment the counter for the contained observation and date.
+         */
         private void incrementObservation() {
-            controller.updateObservationsCount(this.date, this.activity.getText(), true);
+            controller.updateObservationsCount(date, observation.getText(), true);
         }
 
-        //call the controller to decrement the counter
+        /**
+         * Call the controller to decrement the counter for the contained observation and date.
+         */
         private void reduceObservations() {
-            controller.updateObservationsCount(this.date, this.activity.getText(), false);
+            controller.updateObservationsCount(date, observation.getText(), false);
         }
 
+        /**
+         * return this element node.
+         *
+         * @return a node of the element.
+         */
         private Node getView() {
             return this;
         }
