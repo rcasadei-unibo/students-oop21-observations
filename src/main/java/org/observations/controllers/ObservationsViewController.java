@@ -75,13 +75,10 @@ public class ObservationsViewController implements SubController<String, Map<Str
      *
      * @param date        date of observation
      * @param activity    name of observation
-     * @param isIncrement true if is an observation increment operation, false if not.
      */
-    public void updateObservationsCount(String date, String activity, Boolean isIncrement) {
-        if (isIncrement) {
-            precedentOperationIsCounter = true;
-            parentController.incrementObservationCount(date, activity);
-        }
+    public void updateObservationsCount(String date, String activity) {
+        precedentOperationIsCounter = true;
+        parentController.incrementObservationCount(date, activity);
     }
 
     /**

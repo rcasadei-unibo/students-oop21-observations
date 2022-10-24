@@ -57,7 +57,7 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
         dateSelector.valueProperty().addListener((observable, oldValue, newValue) -> setDateSelector());
         dateLabel.setText(DATE_LABEL_TEXT);
 
-        HBox topBox = new HBox(new Label(LABEL_TEXT), dateSelector, dateLabel);
+        HBox topBox = new HBox(new Label(LABEL_TEXT), dateLabel, dateSelector);
         topBox.setSpacing(TOP_BOX_SPACING);
         view.setTop(topBox);
         view.setBottom(bottomBox);
@@ -76,6 +76,7 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
                     temporalData.keySet().stream()
                             .sorted(new DateComparator())
                             .collect(Collectors.toUnmodifiableList()));
+            setDateSelector();
 
             //If a date has precedently selected update the scroll list with the said date.
             //Otherwise, prompt the user to select a date.
@@ -83,6 +84,7 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
                 //If there has been an increment
                 if (controller.isPrecedentOperationIsCounter()) {
                     controller.setPrecedentOperationIsCounter(false);
+
                 }
                 setListPane(lastDateSelected);
             } else {
@@ -127,7 +129,6 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
         if (!dateSelector.getSelectionModel().isEmpty()) {
             String date = dateSelector.getSelectionModel().getSelectedItem();
             lastDateSelected = date;
-            dateLabel.setText(DATE_LABEL_TEXT + " " + date);
             setListPane(date);
         } else if (dateSelector.getItems().contains(lastDateSelected)) {
             dateSelector.getSelectionModel().select(lastDateSelected);
@@ -135,7 +136,6 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
             //Check done to make sure the saved date don't get deleted after an observation increment nut it does if user select a different moment
         } else if (!controller.isPrecedentOperationIsCounter()) {
             lastDateSelected = "";
-            dateLabel.setText(DATE_LABEL_TEXT);
         }
     }
 
@@ -242,14 +242,7 @@ public class ObservationsView implements View<Map<String, Map<String, Integer>>>
          * Call the controller to increment the counter for the contained observation and date.
          */
         private void incrementObservation() {
-            controller.updateObservationsCount(date, observation.getText(), true);
-        }
-
-        /**
-         * Call the controller to decrement the counter for the contained observation and date.
-         */
-        private void reduceObservations() {
-            controller.updateObservationsCount(date, observation.getText(), false);
+            controller.updateObservationsCount(date, observation.getText());
         }
 
         /**
